@@ -36,7 +36,24 @@ void method_one(float* fvalues, int* non_dominated, int pop_size, int* n_non_dom
 }
 
 
-void method_two(float* fvalues, int* indices, int n){
+void method_two(float* fvalues, int* non_dominated, int pop_size, int* n_non_dominated, int n){
+    int i, j=0, k=0;
 
-    return;
+    // step 1
+    non_dominated[0] = 0;
+
+    for (i = 1; i < pop_size; ++i) {
+        for (j = 0; j < k; ++j) {
+            if (is_dominated(&fvalues[j*n], &fvalues[i*n], n))
+                --k;
+            else
+                break;
+        }
+
+        // if i is non-dominated by any in population
+        if (j >= k) 
+            non_dominated[k++] = i;
+    }
+
+    *n_non_dominated = k;
 }
