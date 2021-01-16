@@ -6,7 +6,7 @@ float* read_txt(char* fname, int *pop_size, int* n){
 
     // deal with errors
     if (!file) {
-        printf("Error reading file %s.", fname);
+        printf("Error reading file %s.\n", fname);
         exit(1);
     }
     
