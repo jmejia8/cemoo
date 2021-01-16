@@ -1,5 +1,6 @@
-void read_txt(char* fname, float *fvals, int *pop_size, int* n){
+float* read_txt(char* fname, int *pop_size, int* n){
     FILE *file;
+    float *fvals;
     
     file = fopen(fname, "r");
 
@@ -7,7 +8,6 @@ void read_txt(char* fname, float *fvals, int *pop_size, int* n){
     if (!file) {
         printf("Error reading file %s.", fname);
         exit(1);
-        return;
     }
     
     
@@ -15,7 +15,6 @@ void read_txt(char* fname, float *fvals, int *pop_size, int* n){
     float f;
 
     fscanf(file, "%d %d", &N, &m);
-    printf("N, m = %d %d\n", N, m);
 
     fvals = (float*) malloc(m * N * sizeof(float));
 
@@ -31,5 +30,5 @@ void read_txt(char* fname, float *fvals, int *pop_size, int* n){
 
     fclose(file);
 
-    return;
+    return fvals;
 }
