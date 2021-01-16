@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
      
 
     //method_one(data, non_dominated, pop_size, &n_non_dominated, n);
-    float* fvals = read_txt("txt/example1.txt", &pop_size, &n);
+    float* fvals = read_txt("txt/example_3000_5.txt", &pop_size, &n);
     int non_dominated[pop_size];
 
 
@@ -56,17 +56,6 @@ int main(int argc, char *argv[])
 
     printf("non dominated = %d\n", n_non_dominated);
     printf("time: %lf\n", cpu_time_used);
-
-    int i;
-    for (i = 0; i < n_non_dominated; ++i) {
-        printf("%d\n", 1 + non_dominated[i]);
-    }
-
-    //print_fvals(fvals, pop_size, n);
-
-
-
-
 
 
     return 0;

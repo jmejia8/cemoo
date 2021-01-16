@@ -35,25 +35,43 @@ void method_one(float* fvalues, int* non_dominated, int pop_size, int* n_non_dom
     *n_non_dominated = k;
 }
 
+void deleteat(int* array, int len, int i) {
+    int j;
+
+    for (j = i; j < len-1; ++j) {
+        array[j] = array[j+1];
+    }
+    
+}
 
 void method_two(float* fvalues, int* non_dominated, int pop_size, int* n_non_dominated, int n){
-    int i, j=0, k=0;
+    int i, j, len_p=1;
+    int jj;
 
     // step 1
     non_dominated[0] = 0;
 
     for (i = 1; i < pop_size; ++i) {
-        for (j = 0; j < k; ++j) {
-            if (is_dominated(&fvalues[j*n], &fvalues[i*n], n))
-                --k;
-            else
+        j = 0;
+        while ( j < len_p ) {
+            jj = non_dominated[j];
+            if(is_dominated(&fvalues[i*n], &fvalues[jj*n], n)){
                 break;
+            }
+
+            if (is_dominated(&fvalues[jj*n], &fvalues[i*n], n)){
+                deleteat(non_dominated, len_p, j);
+                jj = non_dominated[j];
+                --len_p;
+                continue;
+            }
+            ++j;
         }
 
         // if i is non-dominated by any in population
-        if (j >= k) 
-            non_dominated[k++] = i;
+        if (j >= len_p) 
+            non_dominated[len_p++] = i;
     }
 
-    *n_non_dominated = k;
+    *n_non_dominated = len_p;
 }
