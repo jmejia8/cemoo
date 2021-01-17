@@ -1,6 +1,9 @@
 main: main.c
 	gcc main.c -Ofast -o main
 
+run: main.c
+	make && ./main
+
 clean:
 	rm main
 
