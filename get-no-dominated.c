@@ -1,3 +1,5 @@
+#include "utils.h"
+
 // is v dominated by u?
 int is_dominated(float* v, float* u, int n){
     int i, flag = 0;
@@ -75,3 +77,23 @@ void method_two(float* fvalues, int* non_dominated, int pop_size, int* n_non_dom
 
     *n_non_dominated = len_p;
 }
+
+void bentlays_method(float* fvalues,
+                     int* non_dominated,
+                     int  pop_size,
+                     int* n_non_dominated,
+                     int* mask_comparison,
+                     int n) {
+
+    if (!mask_non_dominated) {
+        mask_comparison = ivector(pop_size);
+    }
+
+    float* p = fvector(n);
+
+}
+
+void method_three(float* fvalues, int* non_dominated, int pop_size, int* n_non_dominated, int n) {
+    *n_non_dominated = len_p;
+}
+
