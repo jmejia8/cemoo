@@ -1,4 +1,5 @@
-#include "utils.h"
+#include "utils.c"
+#include "sort.c"
 
 // is v dominated by u?
 int is_dominated(float* v, float* u, int n){
@@ -78,22 +79,67 @@ void method_two(float* fvalues, int* non_dominated, int pop_size, int* n_non_dom
     *n_non_dominated = len_p;
 }
 
-void bentlays_method(float* fvalues,
+void bentleys_method(float* fvalues,
                      int* non_dominated,
                      int  pop_size,
                      int* n_non_dominated,
                      int* mask_comparison,
                      int n) {
 
-    if (!mask_non_dominated) {
+    if (!mask_comparison) {
         mask_comparison = ivector(pop_size);
     }
 
+    float N = (float) pop_size;
+
+    int ith = (int) floor(N*(1.0 - pow(log(N) / N, 1.0 / (float) n )));
+    
+    float* column = fvector(pop_size);
     float* p = fvector(n);
+
+
+    // Compute P (step 1)
+    int i, ii;
+    for (i = 0; i < n; ++i) {
+        get_col(fvalues, column, pop_size, n, i);
+        sort(column, pop_size);
+
+        // i-th largest element (revise)
+        p[i] = column[ pop_size - ith - 1];
+    }
+
+    int* C = ivector(pop_size); int len_C;
+    int* B = ivector(pop_size); int len_B;
+    char relation;
+
+    // step 2
+    for (i = 0; i < pop_size; ++i) {
+        relation = compare(fvalues[i*n], p, n);
+
+        if (relation == 'd'){ // row dominates p?
+            C[len_C++] = i;
+        else if (relation == 'i') // are row and p incomparable?
+            B[len_B++] = i;
+        else
+            continue;
+        mask_comparison[len_mask++] = i;
+    }
+
+    // step 3
+    if (len_C == 0) {
+        method_two(fvalues, non_dominated, pop_size, n_non_dominated, n);
+        return;
+    }
+
+    // step 4
+    
+
+
 
 }
 
 void method_three(float* fvalues, int* non_dominated, int pop_size, int* n_non_dominated, int n) {
-    *n_non_dominated = len_p;
+    int* mask_comparison = ivector(pop_size);
+    bentleys_method(fvalues, non_dominated, pop_size, n_non_dominated, mask_comparison, n);
 }
 

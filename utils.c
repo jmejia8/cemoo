@@ -20,3 +20,41 @@ int* ivector(int len) {
     return v;
 }
 
+void get_col(float* matrix, float* vec, int rows, int cols, int col){
+    if (!vec)
+        error("Error getting column since vector is empy");
+
+    int i;
+
+    for (i = 0; i < rows; ++i) {
+        vec[i] = matrix[i*cols + col];
+    }
+
+    
+}
+
+void print_vector(float* v, int len)
+{
+    int i;
+
+    for (i = 0; i < len; ++i) {
+        printf("%2.4g ", v[i]);
+    }
+
+    printf("\n");
+}
+
+
+
+void print_matrix(float* m, int rows, int cols)
+{
+    int i,j;
+
+    for (i = 0; i < rows; ++i) {
+        for (j = 0; j < cols; ++j) {
+            printf("%2.4g ", m[i*cols + j]);
+        }
+        printf("\n");
+    }
+
+}
