@@ -1,18 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 #include "get-no-dominated.c"
 #include "read-txt.c"
-
-void print_fvals(float* fvals, int pop_size, int n){
-    int i, j;
-    for (i = 0; i < pop_size; ++i) {
-        for (j = 0; j < n; ++j) {
-            printf("%f ", fvals[i*n + j]);
-        }
-        printf("\n");
-    }
-}
 
 int main(int argc, char *argv[])
 {
@@ -24,9 +15,11 @@ int main(int argc, char *argv[])
      
 
     //method_one(data, non_dominated, pop_size, &n_non_dominated, n);
-    float* fvals = read_txt("txt/example_3000_5.txt", &pop_size, &n);
+    float* fvals = read_txt("txt/example_3000_3.txt", &pop_size, &n);
     int non_dominated[pop_size];
 
+
+    method_three(fvals, non_dominated, pop_size, &n_non_dominated, n);
 
     //////////////////////////////////////////
     //////////////////////////////////////////
