@@ -47,22 +47,23 @@ void deleteat(int* array, int len, int i) {
     
 }
 
-void method_two(float* fvalues, int* non_dominated, int pop_size, int* n_non_dominated, int n){
+void continous_update(float* fvalues, int* non_dominated, int* mask, int pop_size, int len_mask, int* n_non_dominated, int n){
     int i, j, len_p=1;
-    int jj;
+    int jj, ii;
 
     // step 1
-    non_dominated[0] = 0;
+    non_dominated[0] = mask[0];
 
     for (i = 1; i < pop_size; ++i) {
         j = 0;
+        ii = mask[i];
         while ( j < len_p ) {
             jj = non_dominated[j];
-            if(is_dominated(&fvalues[i*n], &fvalues[jj*n], n)){
+            if(is_dominated(&fvalues[ii*n], &fvalues[jj*n], n)){
                 break;
             }
 
-            if (is_dominated(&fvalues[jj*n], &fvalues[i*n], n)){
+            if (is_dominated(&fvalues[jj*n], &fvalues[ii*n], n)){
                 deleteat(non_dominated, len_p, j);
                 jj = non_dominated[j];
                 --len_p;
@@ -79,67 +80,115 @@ void method_two(float* fvalues, int* non_dominated, int pop_size, int* n_non_dom
     *n_non_dominated = len_p;
 }
 
+void method_two(float* fvalues, int* non_dominated, int pop_size, int* n_non_dominated, int n){
+    int i;
+    int* mask = ivector(pop_size);
+    for (i = 0; i < pop_size; ++i) mask[i] = i;
+    continous_update(fvalues, non_dominated, mask, pop_size, pop_size, n_non_dominated, n);
+}
+/*
+ * a and b are vectors with size k
+ * 'i' means a and b are incomparable
+ * 'd' a dominates b
+ * 'D' b dominates a
+ * */
+char compare(float* a, float* b, int k)
+{
+    int i = 0, j;
+    while (i < k && a[i] == b[i]) ++i;
+
+    if ( i >= k) return 'e'; // a == b
+
+    if (a[i] < b[i]){
+
+        for (j = i+1; j < k; ++j)
+            if (b[j] < a[j]) return 'i'; // a and b are incomparable
+
+        return 'd'; // a dominates b
+    }
+
+    for (j = i+1; j < k; ++j) {
+        if (a[j] < b[j])
+            return 'i'; // a and b are incomparable
+    }
+
+    return 'D'; // b dominates a
+    
+}
+
 void bentleys_method(float* fvalues,
                      int* non_dominated,
                      int  pop_size,
                      int* n_non_dominated,
-                     int* mask_comparison,
+                     int* mask,
+                     int len_mask,
                      int n) {
 
-    if (!mask_comparison) {
-        mask_comparison = ivector(pop_size);
+    int i, ii;
+    // if it is the first call of function
+    // then mask is filled by the all items in fvalues (set s)
+    if (!mask) {
+        mask = ivector(pop_size);
+        for (i = 0; i < pop_size; ++i) mask[i] = i;
     }
 
-    float N = (float) pop_size;
+    float N = (float) len_mask;
 
-    int ith = (int) floor(N*(1.0 - pow(log(N) / N, 1.0 / (float) n )));
+    int ith = (int) floor(0.5 + N*(1.0 - pow(log(N) / N, 1.0 / (float) n )));
     
-    float* column = fvector(pop_size);
+    float* column = fvector(len_mask);
     float* p = fvector(n);
 
 
     // Compute P (step 1)
-    int i, ii;
     for (i = 0; i < n; ++i) {
-        get_col(fvalues, column, pop_size, n, i);
-        sort(column, pop_size);
+        get_col(fvalues, column, mask, len_mask, n, i);
+        sort(column, len_mask);
 
         // i-th largest element (revise)
-        p[i] = column[ pop_size - ith - 1];
+        p[i] = column[ len_mask - ith];
     }
 
-    int* C = ivector(pop_size); int len_C;
-    int* B = ivector(pop_size); int len_B;
+    int len_C = 0;
     char relation;
 
+    int len_mask_new = 0;
+    int* mask_new = ivector(len_mask);
+
     // step 2
-    for (i = 0; i < pop_size; ++i) {
-        relation = compare(fvalues[i*n], p, n);
+    for (i = 0; i < len_mask; ++i) {
+        ii = mask[i];
+        relation = compare(&fvalues[ii*n], p, n);
 
         if (relation == 'd'){ // row dominates p?
-            C[len_C++] = i;
-        else if (relation == 'i') // are row and p incomparable?
-            B[len_B++] = i;
-        else
+            // increment size of C
+            ++len_C;
+        }else if (relation != 'i') // are row and p no incomparable?
             continue;
-        mask_comparison[len_mask++] = i;
+        // B union C (in step 4)
+        mask_new[len_mask_new++] = ii;
     }
 
     // step 3
     if (len_C == 0) {
-        method_two(fvalues, non_dominated, pop_size, n_non_dominated, n);
+        continous_update(fvalues, non_dominated, mask, pop_size, len_mask, n_non_dominated, n);
         return;
     }
 
+    if (len_mask_new == len_mask) {
+        printf("len_mask = %d\n", len_mask);
+        error("Seems S = B U C");
+    }
+
     // step 4
-    
-
-
-
+    *n_non_dominated = len_mask_new;
+    bentleys_method(fvalues, non_dominated, pop_size, n_non_dominated, mask_new, len_mask_new, n);
 }
 
 void method_three(float* fvalues, int* non_dominated, int pop_size, int* n_non_dominated, int n) {
-    int* mask_comparison = ivector(pop_size);
-    bentleys_method(fvalues, non_dominated, pop_size, n_non_dominated, mask_comparison, n);
+    int* mask = ivector(pop_size);
+    int i;
+    for (i = 0; i < pop_size; ++i) mask[i] = i;
+    bentleys_method(fvalues, non_dominated, pop_size, n_non_dominated, mask, pop_size, n);
 }
 

@@ -1,5 +1,5 @@
 void error(char* message) {
-    printf("%s\n", message);
+    printf("ERROR: %s\n", message);
     exit(1);
 }
 
@@ -20,14 +20,14 @@ int* ivector(int len) {
     return v;
 }
 
-void get_col(float* matrix, float* vec, int rows, int cols, int col){
+void get_col(float* matrix, float* vec, int* mask, int rows, int cols, int col){
     if (!vec)
-        error("Error getting column since vector is empy");
+        error("Error getting column since vector is empty");
 
     int i;
 
     for (i = 0; i < rows; ++i) {
-        vec[i] = matrix[i*cols + col];
+        vec[i] = matrix[mask[i]*cols + col];
     }
 
     
