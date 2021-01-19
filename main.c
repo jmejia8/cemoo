@@ -13,9 +13,15 @@ int main(int argc, char *argv[])
     clock_t start, end;
     double cpu_time_used;
      
+    float* fvals;
 
     //method_one(data, non_dominated, pop_size, &n_non_dominated, n);
-    float* fvals = read_txt("txt/example_3000_5.txt", &pop_size, &n);
+    if( argc == 2 ) {
+        fvals = read_txt(argv[1], &pop_size, &n);
+    }else{
+        error("File is required.");
+    }
+
     int non_dominated[pop_size];
 
 

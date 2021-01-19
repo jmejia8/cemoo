@@ -8,4 +8,4 @@ clean:
 	rm main
 
 test:
-	gcc main.c -Wall -O0 -lm -o main && ./main
+	gcc main.c -Wall -O0 -lm -o main && ./main txt/example2.txt
