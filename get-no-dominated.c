@@ -54,7 +54,7 @@ void continous_update(float* fvalues, int* non_dominated, int* mask, int pop_siz
     // step 1
     non_dominated[0] = mask[0];
 
-    for (i = 1; i < pop_size; ++i) {
+    for (i = 1; i < len_mask; ++i) {
         j = 0;
         ii = mask[i];
         while ( j < len_p ) {
@@ -74,7 +74,7 @@ void continous_update(float* fvalues, int* non_dominated, int* mask, int pop_siz
 
         // if i is non-dominated by any in population
         if (j >= len_p) 
-            non_dominated[len_p++] = i;
+            non_dominated[len_p++] = ii;
     }
 
     *n_non_dominated = len_p;
@@ -169,6 +169,7 @@ void bentleys_method(float* fvalues,
         mask_new[len_mask_new++] = ii;
     }
 
+
     // step 3
     if (len_C == 0) {
         continous_update(fvalues, non_dominated, mask, pop_size, len_mask, n_non_dominated, n);
@@ -176,8 +177,8 @@ void bentleys_method(float* fvalues,
     }
 
     if (len_mask_new == len_mask) {
-        printf("len_mask = %d\n", len_mask);
-        error("Seems S = B U C");
+        continous_update(fvalues, non_dominated, mask, pop_size, len_mask, n_non_dominated, n);
+        return;
     }
 
     // step 4
