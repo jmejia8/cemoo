@@ -58,3 +58,13 @@ void print_matrix(float* m, int rows, int cols)
     }
 
 }
+
+
+void deleteat(int* array, int len, int i) {
+    int j;
+
+    for (j = i; j < len-1; ++j) {
+        array[j] = array[j+1];
+    }
+    
+}

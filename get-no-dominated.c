@@ -47,10 +47,6 @@ int is_dominated(float* v, float* u, int n){
 }
 
 
-int is_non_dominated(float* sol_a, float* sol_b, int n){
-    return !is_dominated(sol_a, sol_b, n);
-}
-
 void method_one(float* fvalues, int* non_dominated, int pop_size, int* n_non_dominated, int n){
     int i=0, j, k=0;
 
@@ -69,14 +65,6 @@ void method_one(float* fvalues, int* non_dominated, int pop_size, int* n_non_dom
     *n_non_dominated = k;
 }
 
-void deleteat(int* array, int len, int i) {
-    int j;
-
-    for (j = i; j < len-1; ++j) {
-        array[j] = array[j+1];
-    }
-    
-}
 
 void continous_update(float* fvalues, int* non_dominated, int* mask, int pop_size, int len_mask, int* n_non_dominated, int n){
     int i, j, len_p=1;
