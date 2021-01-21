@@ -1,3 +1,7 @@
+/*
+ * Read a file named fname and return the matrix as a 1D vector
+ * the number of rows and cols are saved via pop_size and n, respectively.
+ * */
 float* read_txt(char* fname, int *pop_size, int* n){
     FILE *file;
     float *fvals;
