@@ -47,6 +47,14 @@ int is_dominated(float* v, float* u, int n){
 }
 
 
+/*
+ * Simple method to find the non-dominated set
+ * Ref:
+ *  Deb, K. (2001). Multi-objective optimization using evolutionary algorithms
+ *  (Vol. 16). John Wiley & Sons.
+ *  In section 2.4-6 Procedures for Finding a Non-Dominated Set
+ *  (approach 1)
+ * */
 void method_one(float* fvalues, int* non_dominated, int pop_size, int* n_non_dominated, int n){
     int i=0, j, k=0;
 
@@ -66,6 +74,14 @@ void method_one(float* fvalues, int* non_dominated, int pop_size, int* n_non_dom
 }
 
 
+/*
+ * Method to find the non-dominated set
+ * Ref:
+ *  Deb, K. (2001). Multi-objective optimization using evolutionary algorithms
+ *  (Vol. 16). John Wiley & Sons.
+ *  In section 2.4-6 Procedures for Finding a Non-Dominated Set
+ *  (approach 2)
+ * */
 void continous_update(float* fvalues, int* non_dominated, int* mask, int pop_size, int len_mask, int* n_non_dominated, int n){
     int i, j, len_p=1;
     int jj, ii;
@@ -101,15 +117,15 @@ void continous_update(float* fvalues, int* non_dominated, int* mask, int pop_siz
     *n_non_dominated = len_p;
 }
 
-void method_two(float* fvalues, int* non_dominated, int pop_size, int* n_non_dominated, int n){
-    int i;
-    int* mask = ivector(pop_size);
-    for (i = 0; i < pop_size; ++i) mask[i] = i;
-    continous_update(fvalues, non_dominated, mask, pop_size, pop_size, n_non_dominated, n);
-}
 
-
-void bentleys_method(float* fvalues,
+/*
+ * Method to find the non-dominated set: Algorithm M2 (inefficient implementation)
+ * Ref:  Bentley, J. L., Clarkson, K. L., & Levine, D. B. (1993).
+ * Fast linear expected-time algorithms for computing maxima and convex hulls.
+ * Algorithmica, 9(2), 168-183.
+ * 
+ * */
+void algorithm_m2(float* fvalues,
                      int* non_dominated,
                      int  pop_size,
                      int* n_non_dominated,
@@ -176,26 +192,17 @@ void bentleys_method(float* fvalues,
 
     // step 4
     *n_non_dominated = len_mask_new;
-    bentleys_method(fvalues, non_dominated, pop_size, n_non_dominated, mask_new, len_mask_new, n);
+    algorithm_m2(fvalues, non_dominated, pop_size, n_non_dominated, mask_new, len_mask_new, n);
 }
 
 
-void move_to_front(int* array, int j, int n)
-{
-    if (j == 0 || j >= n )
-        return;
-
-    int i;
-    int v = array[j];
-
-    for (i = j; i >= 0; --i)
-        array[i] = array[i-1];
-
-    array[0] = v;
-
-}
-
-
+/*
+ * Method to find the non-dominated set: Algorithm M3
+ * Ref:  Bentley, J. L., Clarkson, K. L., & Levine, D. B. (1993).
+ * Fast linear expected-time algorithms for computing maxima and convex hulls.
+ * Algorithmica, 9(2), 168-183.
+ * 
+ * */
 void algorithm_M3(float* fvalues, int* non_dominated, int* mask, int pop_size, int len_mask, int* n_non_dominated, int n){
     int i, j, len_p=1;
     int jj, ii;
@@ -215,15 +222,15 @@ void algorithm_M3(float* fvalues, int* non_dominated, int* mask, int pop_size, i
             if(relation == 'D'){
                 move_to_front(non_dominated, j, len_p);
                 j = len_p + 1;
-
+            // i dominates j?
             } else if (relation == 'd'){
                 deleteat(non_dominated, len_p, j);
                 jj = non_dominated[j];
                 --len_p;
-
+            // are solution i and j equal?
             } else if (relation == 'e'){
                 j = len_p + 1;
-            }else
+            }else // ok, those are no comparable
                 ++j;
 
         }
@@ -237,16 +244,11 @@ void algorithm_M3(float* fvalues, int* non_dominated, int* mask, int pop_size, i
 
 
 
-void method_three(float* fvalues, int* non_dominated, int pop_size, int* n_non_dominated, int n) {
-    int* mask = ivector(pop_size);
-    int i;
-    for (i = 0; i < pop_size; ++i) mask[i] = i;
-    //bentleys_method(fvalues, non_dominated, pop_size, n_non_dominated, mask, pop_size, n);
-    algorithm_M3(fvalues, non_dominated, mask, pop_size, pop_size, n_non_dominated, n);
-}
-
-
-
+/*
+ * Get the non_dominated set and save it into non_dominated with size n_non_dominated
+ * by using method = 1,2 or, 3
+ * fvalues contains the objective function values in a matrix (by rows) with size pop_size x n
+ * */
 void get_non_dominated(float* fvalues, int* non_dominated, int pop_size, int* n_non_dominated, int n, int method) {
     int* mask = ivector(pop_size);
     int i;
@@ -263,7 +265,7 @@ void get_non_dominated(float* fvalues, int* non_dominated, int pop_size, int* n_
             algorithm_M3(fvalues, non_dominated, mask, pop_size, pop_size, n_non_dominated, n);
             break;
         default:
-            error("method should be set 1, 2 or 3 (3 is faster)");
+            error("method should be set 1, 2 or 3 (3 is in general faster)");
             
     }
 }
