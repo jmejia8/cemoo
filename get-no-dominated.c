@@ -179,10 +179,92 @@ void bentleys_method(float* fvalues,
     bentleys_method(fvalues, non_dominated, pop_size, n_non_dominated, mask_new, len_mask_new, n);
 }
 
+
+void move_to_front(int* array, int j, int n)
+{
+    if (j == 0 || j >= n )
+        return;
+
+    int i;
+    int v = array[j];
+
+    for (i = j; i >= 0; --i)
+        array[i] = array[i-1];
+
+    array[0] = v;
+
+}
+
+
+void algorithm_M3(float* fvalues, int* non_dominated, int* mask, int pop_size, int len_mask, int* n_non_dominated, int n){
+    int i, j, len_p=1;
+    int jj, ii;
+    char relation;
+
+    // step 1
+    non_dominated[0] = mask[0];
+
+    for (i = 1; i < len_mask; ++i) {
+        j = 0;
+        ii = mask[i];
+        while ( j < len_p ) {
+            jj = non_dominated[j];
+            relation = compare(&fvalues[ii*n], &fvalues[jj*n], n);
+
+            // j dominates i?
+            if(relation == 'D'){
+                move_to_front(non_dominated, j, len_p);
+                j = len_p + 1;
+
+            } else if (relation == 'd'){
+                deleteat(non_dominated, len_p, j);
+                jj = non_dominated[j];
+                --len_p;
+
+            } else if (relation == 'e'){
+                j = len_p + 1;
+            }else
+                ++j;
+
+        }
+
+        if (j == len_p) 
+            non_dominated[len_p++] = ii;
+    }
+
+    *n_non_dominated = len_p;
+}
+
+
+
 void method_three(float* fvalues, int* non_dominated, int pop_size, int* n_non_dominated, int n) {
     int* mask = ivector(pop_size);
     int i;
     for (i = 0; i < pop_size; ++i) mask[i] = i;
-    bentleys_method(fvalues, non_dominated, pop_size, n_non_dominated, mask, pop_size, n);
+    //bentleys_method(fvalues, non_dominated, pop_size, n_non_dominated, mask, pop_size, n);
+    algorithm_M3(fvalues, non_dominated, mask, pop_size, pop_size, n_non_dominated, n);
+}
+
+
+
+void get_non_dominated(float* fvalues, int* non_dominated, int pop_size, int* n_non_dominated, int n, int method) {
+    int* mask = ivector(pop_size);
+    int i;
+    for (i = 0; i < pop_size; ++i) mask[i] = i;
+
+    switch (method) {
+        case 1:
+            method_one(fvalues, non_dominated, pop_size, n_non_dominated, n);
+            break;
+        case 2:
+            continous_update(fvalues, non_dominated, mask, pop_size, pop_size, n_non_dominated, n);
+            break;
+        case 3:
+            algorithm_M3(fvalues, non_dominated, mask, pop_size, pop_size, n_non_dominated, n);
+            break;
+        default:
+            error("method should be set 1, 2 or 3 (3 is faster)");
+            
+    }
 }
 
