@@ -41,6 +41,23 @@ Example: Ten solutions, three objective functions stored in `points.txt`.
 9 1 1
 ```
 
+Project structure:
+
+```
+.
+├── get-no-dominated.c
+├── main.bin
+├── main.c
+├── Makefile
+├── points.txt
+├── README.md
+├── read-txt.c
+├── sort.c
+├── test_non_dominated.c
+├── txt/
+└── utils.c
+```
+
 Run using the command (after compilation): `./main.bin points.txt 2` to find the non-dominated
 set by using algorithm 2.
 
