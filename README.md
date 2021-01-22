@@ -25,7 +25,7 @@ Input data:
 Create TXT file where the first line include the number of solutions and the number of
 function separated by a space. The following lines are the solutions by rows.
 
-Example: Ten solutions, three objective functions saved in `points.txt`.
+Example: Ten solutions, three objective functions stored in `points.txt`.
 
 ```
 10 3
@@ -41,13 +41,14 @@ Example: Ten solutions, three objective functions saved in `points.txt`.
 9 1 1
 ```
 
-Run using the command (after compilation): `./main.bin points.txt 3`
+Run using the command (after compilation): `./main.bin points.txt 2` to find the non-dominated
+set with method 2.
 
 
 Output:
 
 ```
-Method = 1
+Method = 2
 non dominated = 6
 time: 0.000003
 
