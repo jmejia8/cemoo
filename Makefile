@@ -7,18 +7,15 @@ TARGET = main
 all: $(TARGET)
 
 $(TARGET): $(TARGET)
-	$(CC) $(TARGET).c $(CFLAGS) -Ofast -o $(TARGET).run
-
-run: main.c
-	make && ./main
+	$(CC) $(TARGET).c $(CFLAGS) -Ofast -o $(TARGET).bin
 
 clean:
-	rm *.run
+	rm *.bin
 
 test:
-	$(CC) test_non_dominated.c $(CFLAGS) -O0 -o test.run && ./test.run txt/instances.txt
+	$(CC) test_non_dominated.c $(CFLAGS) -O0 -o test.bin && ./test.bin txt/instances.txt
 
 
 experiment:
-	$(CC) test_non_dominated.c $(CFLAGS) -Ofast -o test.run && ./test.run txt/instances.txt
+	$(CC) test_non_dominated.c $(CFLAGS) -Ofast -o test.bin && ./test.bin txt/instances.txt
 
