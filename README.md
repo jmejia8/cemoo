@@ -15,7 +15,7 @@ the method to find non-dominated solutions.
 Input data:
 
 - TXT file separated by spaces.
-- Method to use (1, 2 or 3).
+- Algorithm to use (1, 2 or 3).
  - `1` Simple method.
  - `2` Continuous update.
  - `3` Algorithm M3 (Bentley, 1993).
@@ -42,7 +42,7 @@ Example: Ten solutions, three objective functions stored in `points.txt`.
 ```
 
 Run using the command (after compilation): `./main.bin points.txt 2` to find the non-dominated
-set with method 2.
+set by using algorithm 2.
 
 
 Output:
@@ -86,6 +86,11 @@ Method: 3	instance: txt/example_3000_5.txt	# non dominated: 240	time: 0.001468
 
 All test passed. :D
 ```
+
+
+You can create an instance by adding a file as described before in folder `txt/` and
+add the instance to the `txt/instances.txt` file (TXT file name, number of non-dominated
+solutions separated by a space).
 
 ## Development
 
