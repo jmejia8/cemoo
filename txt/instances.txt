@@ -1,0 +1,6 @@
+txt/example1.txt 6
+txt/example2.txt 8
+txt/example_3000_3.txt 34
+txt/example_3000_4.txt 103
+txt/example_3000_5.txt 240
+
