@@ -266,39 +266,92 @@ void algorithm_m2(float* fvalues,
  * */
 void algorithm_M3(float* fvalues, int* non_dominated, int* mask, int pop_size, int len_mask, int* n_non_dominated, int n){
     int i, j, len_p=1;
-    int jj, ii;
+    int jj, ii, l;
     char relation;
 
     // step 1
     non_dominated[0] = mask[0];
+    printf("Paso 1: $P' = \\{ %d \\}, \\ i = 2$.  \n\n", non_dominated[0] + 1);
 
     for (i = 1; i < len_mask; ++i) {
         j = 0;
+        printf("Paso 2: Hacer $j = 1$.  \n \n");
+
         ii = mask[i];
         while ( j < len_p ) {
             jj = non_dominated[j];
+            printf("Paso 3: Comparar solución $i=%d$ con $P'[j=%d]=%d$.\n\n", ii+1,j+1, jj+1);
             relation = compare(&fvalues[ii*n], &fvalues[jj*n], n);
 
             // j dominates i?
             if(relation == 'D'){
+                printf("Paso 4: Como el miembro $j=%d$ de $P'$, ($P'[j]=%d$) domina a $i=%d$.",j+1, jj+1, ii+1 );
+                printf(" Mover $j$ al principio de $P'$, incrementar $i$ en uno e ir al Paso 2. \n\n");
+                
                 move_to_front(non_dominated, j, len_p);
+
+
+                printf("Así, $P' = \\{");
+                for (l = 0; l < len_p; ++l) 
+                    printf("%d, ", non_dominated[l] +1 );
+                printf("\\}$. \n\n");
+
+
                 j = len_p + 1;
             // i dominates j?
             } else if (relation == 'd'){
+                printf("Paso 4: Como $i = %d$ domina a $P'[j]=%d$, entonces borrar el elemento $j=%d$ de $P'$. ", ii+1, jj+1, j+1);
                 deleteat(non_dominated, len_p, j);
                 jj = non_dominated[j];
                 --len_p;
+
+
+                printf("Así, $P' = \\{");
+                for (l = 0; l < len_p; ++l) 
+                    printf("%d, ", non_dominated[l] +1 );
+                printf("\\}$. \n\n");
+
             // are solution i and j equal?
             } else if (relation == 'e'){
+                printf("Paso 4: Como la solución $i$ y $y$ son iguales, incrementar $i$ e ir a Paso 2 \n");
                 j = len_p + 1;
-            }else // ok, those are no comparable
+            }else{ 
+
+                if (j<len_p-1) {
+                    printf("Paso 4: Como $i$ y $P'[j]$ son incomparables y $j=%d < |P'| = %d$, entonces incrementar $j$ en uno e ir al Paso 3.\n\n", j+1, len_p);
+                }else
+                    printf("Paso 4: Como $i$ y $P'[j]$ son incomparables y $j= |P'| = %d$, entonces ir al Paso 5.\n\n", len_p);
+
                 ++j;
+            }// ok, those are no comparable
+
 
         }
 
-        if (j == len_p) 
+        if (j == len_p) {
+
             non_dominated[len_p++] = ii;
+            printf("Paso 5: Insertar $i = %d$ en $P'$. ", ii+1);
+
+
+            printf("Así, $P' = \\{");
+            for (l = 0; l < len_p; ++l) 
+                printf("%d, ", non_dominated[l] +1 );
+            printf("\\}$. ");
+
+            if (i<len_mask-1) {
+                printf("Incrementar $i$ en uno e ir al Paso 2.\n\n");
+            }
+        }
     }
+
+
+    printf("Paso 2: Como $i>N$, ir a Paso 5.\n\n");
+    printf("Paso 5: Como $i\\geq N $, entonces el conjunto no dominado es:\n");
+    printf("$P' = \\{");
+    for (l = 0; l < len_p; ++l) 
+        printf("%d, ", non_dominated[l] +1 );
+    printf("\\}$\n");
 
     *n_non_dominated = len_p;
 }
