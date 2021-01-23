@@ -108,3 +108,40 @@ void move_to_front(int* array, int j, int n)
     array[0] = v;
 
 }
+
+
+int argmin(float* array, int len){
+    int i, i_min = 0;
+    float min = array[0];
+
+    for (i = 1; i < len; ++i) {
+        if (min > array[i]) {
+            min = array[i];
+            i_min = i;
+        }
+    }
+
+    return i_min;
+
+}
+
+float minimum(float array, int len)
+{
+    return array[ argmin(array, len) ];
+
+}
+
+void fill_ideal(float* ideal, float* fvalues, int N, int m)
+{
+    int i, j;
+    float f; // auxiliar function
+    for (j = 0; j < m; ++j) {
+
+        // assume first vector in fvalues is the ideal
+        ideal[j] = fvalues[j];
+        for (i = 1; i < N; ++i) {
+            f = fvalues[i*m + j];
+            if (ideal[j] > f) ideal[j] = f;
+        }
+    }
+}
