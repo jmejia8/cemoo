@@ -19,3 +19,5 @@ test:
 experiment:
 	$(CC) test_non_dominated.c $(CFLAGS) -Ofast -o test.bin && ./test.bin txt/instances.txt
 
+nsga:
+	$(CC) nsga-iii.c $(CFLAGS) -O0 -o nsga-iii.bin && ./nsga-iii.bin
