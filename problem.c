@@ -10,12 +10,11 @@ void DTLZ2(float* x, float* F, int n, int m)
         F[i] = (1.0 + g);
 
         for (j = 0; j < m-i-1; ++j) {
-            F[i] *= cos(x[i] * M_PI / 2.0 );
+            F[i] *= cos(x[j] * M_PI / 2.0 );
         }
+        
+        F[i] *=  sin(x[m-i-1] * M_PI / 2.0 );
 
-        if (i>0) {
-            F[i] *=  sin(x[i] * M_PI / 2.0 );
-        }
     }
     
 }

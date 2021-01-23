@@ -52,7 +52,7 @@ void print_vector(float* v, int len)
     int i;
 
     for (i = 0; i < len; ++i) {
-        printf("%2.4g ", v[i]);
+        printf("%2.04f ", v[i]);
     }
 
     printf("\n");
@@ -69,7 +69,7 @@ void print_matrix(float* m, int rows, int cols)
 
     for (i = 0; i < rows; ++i) {
         for (j = 0; j < cols; ++j) {
-            printf("%2.4g ", m[i*cols + j]);
+            printf("%2.04f ", m[i*cols + j]);
         }
         printf("\n");
     }
