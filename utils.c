@@ -125,7 +125,7 @@ int argmin(float* array, int len){
 
 }
 
-float minimum(float array, int len)
+float minimum(float* array, int len)
 {
     return array[ argmin(array, len) ];
 

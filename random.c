@@ -9,3 +9,8 @@ void fill_random(float a, float b, float* array, int size)
     
 }
 
+
+float rand01(){
+    return (float)rand() / (float)RAND_MAX;
+}
+
