@@ -67,12 +67,15 @@ int main(int argc, char *argv[])
 {
     // srand(time(0));
     Population P;
+    float p_cross = 0.9;
+    float di = 20.5;
 
-    P.N =  5000;
+    float p_mut = 0.01;
+    float dim = 20.0;
+
+    P.N = 1500;
     P.m = 5;
     P.n = P.m + 10 - 1;
-    float di = 20.5;
-    float dim = 20.0;
 
     float bounds[P.n][2];
     int i;
@@ -88,16 +91,14 @@ int main(int argc, char *argv[])
 
 
     printf("Population:\n");
-    //print_matrix(P.positions, P.N, P.n);
-    printf("epale\n");
+    print_matrix(P.positions, 10, P.n);
 
-    realcross(new_pop, P.positions, P.N, P.n, 0.9, bounds, di);
-    return 0;
+    realcross(new_pop, P.positions, P.N, P.n, p_cross, bounds, di);
     printf("--------------------------------- after cross:\n");
-    //print_matrix(new_pop, P.N, P.n);
-    realmutate(new_pop, P.N, P.n, 0.01, dim, bounds);
+    print_matrix(new_pop, 10, P.n);
+    realmutate(new_pop, P.N, P.n, p_mut, dim, bounds);
     printf("--------------------------------- after mut:\n");
-    //print_matrix(new_pop, P.N, P.n);
+    print_matrix(new_pop, 10, P.n);
     printf("---------------------------------\n");
     return 0;
 
