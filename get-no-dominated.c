@@ -270,3 +270,64 @@ void get_non_dominated(float* fvalues, int* non_dominated, int pop_size, int* n_
     }
 }
 
+void fast_non_dominated(float* fvalues, int* non_dominated, int pop_size, int* n_non_dominated, int n, int method)
+{
+
+    int i, j;
+    char relation;
+
+    // step 1
+    int is_dominating[pop_size], n_dominated;
+    int current_front[pop_size], n_current_front;
+    int n_fronts[pop_size], fronts[pop_size];
+    float ranked;
+    int n_raked = 0;
+
+    for (i = 0; i < pop_size; ++i) {
+        for (j = i+1; j < pop_size; ++j) {
+            relation = compare(&fvalues[i*n], &fvalues[j*n], n);
+            if(relation == 'D'){
+                is_dominating[j] = i;
+                n_dominated[j] += 1;
+            }else if (relation == 'd'){
+                is_dominating[i] = j;
+                n_dominated[i] += 1;
+            }
+        }
+
+        if (n_dominated[i] == 0) {
+            ranked[i] = 1.0;
+            fronts[n_current_front++] = i;
+            ++n_raked;
+        }
+
+    }
+
+    n_fronts[0] = n_current_front;
+
+    n_current_front = 1;
+    while(n_raked < pop_size) {
+        for (ii = 0; ii < n_fronts[ n_current_front ]; ++ii) {
+            i = front[ii];
+
+            for (jj = 0; jj < pop_size; ++jj) {
+                j = is_dominating[jj];
+                n_dominated[j] -= 1;
+                
+                if (n_dominated[j] == 0) {
+                    // current front
+                    fronts[ n_raked ] = j;
+                    ranked[j] = 1.0;
+
+                    // current front size
+                    ++n_fronts[ n_current_front ];
+                    ++n_current_front;
+                    ++n_raked;
+                }
+            }
+        }
+        ++n_current_front;
+    }
+
+}
+
