@@ -367,9 +367,9 @@ void get_fronts(float* fvalues, int* fronts, int* n_fronts, int pop_size, int n)
     }
 
 
-    // for (i = 0; i < pop_size; ++i) {
-    //     free(is_dominating[i]);
-    // }
+    for (i = 0; i < pop_size; ++i) {
+        free(is_dominating[i]);
+    }
 
 }
 
