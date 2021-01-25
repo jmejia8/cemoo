@@ -1,23 +1,34 @@
-CC = gcc
+CC := g++ # This is the main compiler
+# CC := clang --analyze # and comment out the linker last line for sanity
+SRCDIR := src
+BUILDDIR := build
+TARGET := bin/runner
 
-CFLAGS  = -Wall -lm 
+SRCEXT := cpp
+SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
+OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
+CFLAGS := -g # -Wall
+LIB := -lm 
+INC := -I include
 
-TARGET = main
+$(TARGET): $(OBJECTS)
+	@echo " Linking..."
+	@echo " $(CC) $^ -o $(TARGET) $(LIB)"; $(CC) $^ -o $(TARGET) $(LIB)
 
-all: $(TARGET)
-
-$(TARGET): $(TARGET)
-	$(CC) $(TARGET).c $(CFLAGS) -Ofast -o $(TARGET).bin
+$(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
+	@mkdir -p $(BUILDDIR)
+	@echo " $(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
 clean:
-	rm *.bin
+	@echo " Cleaning..."; 
+	@echo " $(RM) -r $(BUILDDIR) $(TARGET)"; $(RM) -r $(BUILDDIR) $(TARGET)
 
-test:
-	$(CC) test_non_dominated.c $(CFLAGS) -O0 -o test.bin && ./test.bin txt/instances.txt
+# Tests
+tester:
+	$(CC) $(CFLAGS) test/tester.cpp $(INC) $(LIB) -o bin/tester
 
+# Spikes
+ticket:
+	$(CC) $(CFLAGS) spikes/ticket.cpp $(INC) $(LIB) -o bin/ticket
 
-experiment:
-	$(CC) test_non_dominated.c $(CFLAGS) -Ofast -o test.bin && ./test.bin txt/instances.txt
-
-nsga:
-	$(CC) nsga-iii.c $(CFLAGS) -O0 -o nsga-iii.bin && ./nsga-iii.bin
+.PHONY: clean
