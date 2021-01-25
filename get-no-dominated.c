@@ -283,7 +283,9 @@ void get_fronts(float* fvalues, int* fronts, int* n_fronts, int pop_size, int n)
     char relation;
 
     // step 1
-    int is_dominating[pop_size][pop_size], n_dominated[pop_size];
+    int** is_dominating = imatrix(pop_size, pop_size);
+    int n_is_dominating[pop_size];
+    int n_dominated[pop_size];
     int n_current_front;
     // float ranked[pop_size];
     int n_ranked = 0;
@@ -291,6 +293,7 @@ void get_fronts(float* fvalues, int* fronts, int* n_fronts, int pop_size, int n)
     for (i = 0; i < pop_size; ++i) {
         n_dominated[i] = 0;
         n_fronts[i] = 0;
+        n_is_dominating[i] = 0;
 
     }
 
@@ -299,12 +302,14 @@ void get_fronts(float* fvalues, int* fronts, int* n_fronts, int pop_size, int n)
             relation = compare(&fvalues[i*n], &fvalues[j*n], n);
             // j domiates i?
             if(relation == 'D'){
-                is_dominating[j][n_dominated[j]] = i;
+                is_dominating[j][n_is_dominating[j]] = i;
                 n_dominated[i] += 1;
+                n_is_dominating[j] += 1;
             // i domiates j?
             }else if (relation == 'd'){
-                is_dominating[i][n_dominated[i]] = j;
+                is_dominating[i][n_is_dominating[i]] = j;
                 n_dominated[j] += 1;
+                n_is_dominating[i] += 1;
             }
         }
 
@@ -322,6 +327,7 @@ void get_fronts(float* fvalues, int* fronts, int* n_fronts, int pop_size, int n)
 
     n_current_front = 0;
     int* current_front = fronts;
+    int n_ranked_old = n_ranked;
 
     // while not all solutions are assigned to a pareto front
     while(n_ranked < pop_size) {
@@ -329,9 +335,12 @@ void get_fronts(float* fvalues, int* fronts, int* n_fronts, int pop_size, int n)
         for (ii = 0; ii < n_fronts[ n_current_front ]; ++ii) {
             i = current_front[ii];
 
+
             // all solutions that are dominated by this individual
-            for (jj = 0; jj < n_dominated[i]; ++jj) {
+            for (jj = 0; jj < n_is_dominating[i]; ++jj) {
+                
                 j = is_dominating[i][jj];
+
                 n_dominated[j] -= 1;
                 
                 if (n_dominated[j] == 0) {
@@ -343,13 +352,24 @@ void get_fronts(float* fvalues, int* fronts, int* n_fronts, int pop_size, int n)
                     ++n_fronts[ n_current_front + 1 ];
                     ++n_ranked;
                 }
+
             }
+        }
+
+        if (n_fronts[ n_current_front + 1 ] == 0) {
+            error("empty front found.");
         }
 
         ++n_current_front;
         // move to next front
-        current_front = &fronts[ n_ranked - n_fronts[ n_current_front ] ];
+        current_front = &fronts[ n_ranked_old ];
+        n_ranked_old = n_ranked;
     }
+
+
+    // for (i = 0; i < pop_size; ++i) {
+    //     free(is_dominating[i]);
+    // }
 
 }
 
@@ -360,20 +380,17 @@ void get_fronts(float* fvalues, int* fronts, int* n_fronts, int pop_size, int n)
  * https://github.com/msu-coinlab/pymoo/blob/master/pymoo/util/nds/fast_non_dominated_sort.py
  *
  * */
-void fast_non_dominated(float* fvalues, int* sort, int* rank, int pop_size, int n) {
-    int fronts[pop_size], n_fronts[pop_size], i;
+void fast_non_dominated(float* fvalues, int* fronts, int* fronts_sizes, int pop_size, int n) {
 
+    int i;
     for (i = 0; i < pop_size; ++i) {
         fronts[i] = 0;
-        n_fronts[i] = 0;
+        fronts_sizes[i] = 0;
     }
 
-    get_fronts(fvalues, fronts, n_fronts, pop_size, n);
 
-    for (i = 0; i < n_fronts[i]; ++i) {
-        printf("%d ", fronts[i]);
-    }
-    printf("\n");
+    get_fronts(fvalues, fronts, fronts_sizes, pop_size, n);
+
 
 }
 

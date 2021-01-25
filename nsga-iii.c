@@ -43,7 +43,6 @@ void fill_population(float* positions, int N, int n, float bounds[n][2]){
 void initialize(Population* P, float bounds[P->n][2])
 {
 
-    printf("initialize\n");
     P->positions = fvector(P->N * P->n);
     P->fvalues = fvector(P->N * P->m);
 
@@ -73,9 +72,21 @@ int main(int argc, char *argv[])
     float p_mut = 0.01;
     float dim = 20.0;
 
+
     P.N = 1500;
     P.m = 5;
     P.n = P.m + 10 - 1;
+
+
+    ///////////////////
+    ///////////////////
+    ///////////////////
+    float* new_pop = fvector(P.N*P.m);
+    int* fronts = ivector(P.N);
+    int* fronts_sizes = ivector(P.N);
+    ///////////////////
+    ///////////////////
+    ///////////////////
 
     float bounds[P.n][2];
     int i;
@@ -86,40 +97,31 @@ int main(int argc, char *argv[])
 
 
     initialize(&P, bounds);
+    printf("Initialization done!\n");
 
-    float* new_pop = fvector(P.N*P.m);
-
-
-    printf("Population:\n");
-    print_matrix(P.positions, 10, P.n);
 
     realcross(new_pop, P.positions, P.N, P.n, p_cross, bounds, di);
-    printf("--------------------------------- after cross:\n");
-    print_matrix(new_pop, 10, P.n);
+    printf("Crossover done!\n");
+
     realmutate(new_pop, P.N, P.n, p_mut, dim, bounds);
-    printf("--------------------------------- after mut:\n");
-    print_matrix(new_pop, 10, P.n);
-    printf("---------------------------------\n");
-    return 0;
+    printf("Mutation done!\n");
 
-    printf("\nF values:\n");
-    // print_matrix(P.fvalues, P.N, P.m);
-    printf("\n");
-
-
-    int* non_dominated = ivector(P.N);
-    int k;
-
-
-    get_non_dominated(P.fvalues, non_dominated, P.N, &k, P.m, 3);
-
-    for (i = 0; i < k; ++i) {
-        printf("%03d: ", non_dominated[i]);
-        print_matrix(&P.fvalues[ non_dominated[i]* P.m ], 1, P.m);
+    fast_non_dominated(P.fvalues, fronts, fronts_sizes, P.N, P.m);
+    printf("Domination sort done!\n");
+    
+    for (i = 0; i < fronts_sizes[0] ; ++i) {
+        printf("%d ", fronts[i]);
     }
+
     printf("\n");
 
-    printf("no dominated = %d\n", k);
+
+    // free(fronts);
+    // free(fronts_sizes);
+    // free(P.positions);
+    // free(P.fvalues);
+    // free(new_pop);
+
     return 0;
 }
 

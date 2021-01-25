@@ -31,6 +31,22 @@ int* ivector(int len) {
 }
 
 
+
+int** imatrix(int rows, int cols) {
+    int** matrix = (int**) malloc(rows * sizeof(int*));
+    if (!matrix) {
+        error("Error allocating memory\n");
+    }
+
+    int i;
+    for (i = 0; i < rows; ++i) {
+        matrix[i] = ivector(cols);
+    }
+
+    return matrix;
+}
+
+
 /*
  * get column col via vec in a matrix 
  * */
