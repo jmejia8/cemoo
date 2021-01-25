@@ -1,7 +1,9 @@
+#ifndef UTILS_H
+#define UTILS_H
 /*
  * Print error message and exit the program.
  * */
-void error(char* message) {
+void error(const char* message) {
     printf("ERROR: %s\n", message);
     exit(1);
 }
@@ -160,4 +162,7 @@ void fill_ideal(float* ideal, float* fvalues, int N, int m)
             if (ideal[j] > f) ideal[j] = f;
         }
     }
+
 }
+
+#endif

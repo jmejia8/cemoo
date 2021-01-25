@@ -4,10 +4,11 @@
 #include <math.h>
 
 // load functions to find non dominated sets
-#include "get-no-dominated.c"
+#include "get-no-dominated.h"
+#include "utils.h"
 
 // read txt with space separated values
-#include "read-txt.c"
+#include "read-txt.h"
 
 int main(int argc, char *argv[])
 {

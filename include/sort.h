@@ -1,3 +1,6 @@
+#ifndef SORT_H
+#define SORT_H
+
 // adapted from:
 //https://rosettacode.org/wiki/Sorting_algorithms/Quicksort 
  
@@ -25,3 +28,5 @@ void quicksort(float *A, int len) {
 void sort(float* A, int len) {
     quicksort(A, len);
 }
+
+#endif

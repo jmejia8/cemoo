@@ -6,72 +6,53 @@ private:
 	int n_objectives;
 
 public:
-	float* x;
-	float* f;
+	float* x = NULL;
+	float* f = NULL;
+
+	Individual (){};
 
 	Individual (int dimension_, int n_objectives_){
 		dimension = dimension_;
 		n_objectives = n_objectives_;
 
-		x = (float*) malloc( dimension * sizeof(float) );
-		f = (float*) malloc( n_objectives * sizeof(float) );
+		x = fvector(dimension);
+		f = fvector(n_objectives);
 	};
 	virtual ~Individual (){
 		free(x);
 		free(f);
 	}
 
+
+	void set_x(float* x_new, int len){
+		dimension = len;
+		x = fvector(dimension);
+		set_x(x_new);
+	}
+
+	void set_x(float* x_new){
+		for (int i = 0; i < dimension; ++i) {
+			x[i] = x_new[i];
+		}
+	}
+
+
+	void set_f(float* f_new){
+		for (int i = 0; i < dimension; ++i) {
+			f[i] = f_new[i];
+		}
+	}
+
+
+	void set_f(float* f_new, int len){
+		n_objectives = len;
+		f = fvector(n_objectives);
+		set_f(f_new);
+	}
+
 };
 
-
-Individual::set_x(float* x_new){
-	for (int i = 0; i < dimension; ++i) {
-		x[i] = x_new[i];
-	}
-}
-
-
-Individual::set_f(float* f_new){
-	for (int i = 0; i < dimension; ++i) {
-		f[i] = f_new[i];
-	}
-}
-
-
-class Population
+void permutate_population(Individual* pop)
 {
-public:
-	int size;
-	Individual* population;
-
-	Population (int size_){
-		size = size_;
-		population = (Individual * ) malloc(size * sizeof(Individual));
-
-	}
-
-	virtual ~Population (){
-		delete[] population;
-	}
-
-	
-};
-
-
-Population::initilize(int dimension, int n_objectives, float bounds[size][2]){
-	float* x = fvector(dimension);
-	float* f = fvector(n_objectives);
-
-	for (int i = 0; i < size; ++i) {
-		population[i] = new Individual(dimension, n_objectives);
-		population[i].set_x(x);
-		population[i].set_f(f);
-	}
-}
-
-Population::permutate(int* mask){
-	Individual temp[size];
-	for (int i = 0; i < size; ++i) {
-		
-	}
+	printf("permutate_population\n");
 }

@@ -1,5 +1,5 @@
-#include "utils.c"
-#include "sort.c"
+#include "utils.h"
+#include "sort.h"
 
 
 /*
