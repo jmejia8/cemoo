@@ -10,15 +10,29 @@ int main(int argc, char *argv[])
 {
     printf("Hola mundo\n");
 
-    Individual pop[10];
+    int pop_size = 10;
+    Individual* pop = gen_population(pop_size) ;
+    int* mask = ivector(pop_size);
 
-    pop[0].set_x(fvector(7), 7);
 
-    for (int i = 0; i < 7; ++i) {
-        printf("%f\n", pop[0].x[i]);
+    for (int i = 0; i < pop_size; ++i) {
+        pop[i] = Individual();
+        pop[i].set_x(fvector(7), 7);
+        pop[i].x[0] = (float)i;
+        printf("%f ", pop[i].x[0]);
+        mask[i] = pop_size - i - 1;
     }
 
-    permutate_population(pop);
+
+    permutate_population(pop, mask, pop_size);
+
+    printf("\n---------\n");
+
+    for (int i = 0; i < pop_size; ++i) {
+        printf("%f ", pop[i].x[0]);
+    }
+    printf("\n");
+
 
     
     return 0;

@@ -52,7 +52,22 @@ public:
 
 };
 
-void permutate_population(Individual* pop)
-{
-	printf("permutate_population\n");
+
+Individual* gen_population(int pop_size){
+	return (Individual*) malloc(sizeof(Individual) * pop_size );
 }
+
+void permutate_population(Individual* pop, int* mask, int pop_size)
+{
+
+	Individual* pop_new = gen_population(pop_size);
+
+	for (int i = 0; i < pop_size; ++i)
+		pop_new[i] = pop[i];
+
+	for (int i = 0; i < pop_size; ++i)
+		pop[i] = pop_new[mask[i]];
+
+
+}
+
