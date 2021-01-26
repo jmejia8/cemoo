@@ -5,6 +5,7 @@
 #include "external_problem.h"
 #include "population.hpp"
 #include "NSGA-III.hpp"
+#include "Plot.hpp"
 
 using namespace std;
 
@@ -32,6 +33,11 @@ int main(int argc, char *argv[])
     ga->set_population_size(population_size);
     ga->run();
 
+
+    Plot plt;
+
+    plt.scatter(ga->population, ga->n_fronts[0]);
+    plt.show();
 
     printf("adiosin\n");
 
