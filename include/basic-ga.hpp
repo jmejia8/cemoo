@@ -33,8 +33,8 @@ public:
 
 	int population_size = 0;
 	int max_generations = 100; // maximum number of generations
-	float p_m = 0.9; // mutation probability
-	float p_c = 0.01; // crossover probability
+	float p_m = 0.01; // mutation probability
+	float p_c = 0.9; // crossover probability
 	Individual* population = NULL;
 	Individual* offsprings = NULL;
 	Problem* problem = NULL;

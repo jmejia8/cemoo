@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sort.h>
 #include <utils.h>
+#include <time.h>
 
 #include "external_problem.h"
 #include "population.hpp"
@@ -13,9 +14,10 @@ int main(int argc, char *argv[])
 {
 
     printf("Hola cara de bola\n");
+    srand(time(NULL));
 
-    int population_size = 200;
-    int m = 3;
+    int population_size = 100;
+    int m = 2;
     int dim = m + 10 - 1;
     float** bounds = fmatrix(dim, 2);
 
@@ -29,6 +31,7 @@ int main(int argc, char *argv[])
     Problem* p = new Problem(dim, m, bounds);
 
     NSGAIII* ga = new NSGAIII(p);
+    ga->max_generations = 500;
 
     ga->set_population_size(population_size);
     ga->run();

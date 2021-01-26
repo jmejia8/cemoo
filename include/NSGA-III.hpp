@@ -11,8 +11,8 @@ class NSGAIII: public GA {
         int* parent;
 
 	public:
-		float di = 20.0;
-		float dim = 20.0;
+		float di = 10.0;
+		float dim = 50.0;
         int* fronts = NULL, *n_fronts = NULL;
 
 		NSGAIII(Problem* problem_) 
@@ -50,7 +50,7 @@ void NSGAIII::run()
 	initialize_with_randoms();
 	eval_population();
 
-	for (int gen = 0; gen < 100; ++gen) {
+	for (int gen = 0; gen < max_generations; ++gen) {
 
 		gen_parents();
 		crossover();
@@ -257,7 +257,7 @@ void NSGAIII::realmutate()
 	int popsize = population_size;
 	int nvar = problem->n_objectives;
 	float** lim_r = problem->bounds;
-	float pmut_r = p_c;
+	float pmut_r = p_m;
 
 	Individual* new_pop_ptr = offsprings;
 
