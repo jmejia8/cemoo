@@ -7,7 +7,7 @@
 class Problem
 {
 public:
-	int dimension = 0, n_objectives;
+	int dimension = 0, n_objectives = 0;
 	float** bounds;
 
 	Problem ();
@@ -27,17 +27,16 @@ public:
 
 };
 
-class BasicGeneticAlgorithm
+class GA
 {
 public:
-	BasicGeneticAlgorithm ();
-	BasicGeneticAlgorithm(Problem* problem_)
+	GA ();
+	GA(Problem* problem_)
 	{
 		problem = problem_;
 	}
-	virtual ~BasicGeneticAlgorithm (){
+	virtual ~GA (){
 		delete[] population;
-		delete[] offsprings;
 		delete problem;
 	}
 
@@ -48,9 +47,9 @@ public:
 		}
 
 		population_size = population_size_;
-		// initialize pointers to individuals
-		population = gen_population(population_size, true);
-		offsprings = gen_population(population_size, true);
+		// initialize pointers to individuals (parent and offsprings in same array)
+		population = gen_population(2*population_size, true);
+		offsprings = &population[population_size];
 
 	}
 

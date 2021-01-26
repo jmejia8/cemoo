@@ -30,6 +30,21 @@ void fill_population(float* positions, int N, int n, float* bounds[]){
 
 }
 
+int randint(int a, int b)
+{
+    return a + rand() % (b-a);
+}
+
+void randperm(int* values, int len)
+{
+    int j, tmp;
+    for (int i = 0; i < len; ++i) {
+        j = randint(0, len-i);
+        tmp = values[i];
+        values[i] = values[j];
+        values[j] = tmp;
+    }
+}
 
 #endif
 

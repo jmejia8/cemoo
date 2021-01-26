@@ -4,7 +4,7 @@
 
 #include "external_problem.h"
 #include "population.hpp"
-#include "basic-ga.hpp"
+#include "NSGA-III.hpp"
 
 using namespace std;
 
@@ -29,14 +29,10 @@ int main(int argc, char *argv[])
 
     Problem* p = new Problem(dim, m, bounds);
 
-    BasicGeneticAlgorithm* ga = new BasicGeneticAlgorithm(p);
+    NSGAIII* ga = new NSGAIII(p);
 
-    float start = ttime();
     ga->set_population_size(population_size);
-    ga->initialize_with_randoms();
-    ga->eval_population();
-    std::cout << "time in second: " << ttime() - start << std::endl;
-
+    ga->run();
 
 
     printf("adiosin\n");
