@@ -30,6 +30,16 @@ public:
 class GA
 {
 public:
+
+	int population_size = 0;
+	int max_generations = 100; // maximum number of generations
+	float p_m = 0.9; // mutation probability
+	float p_c = 0.01; // crossover probability
+	Individual* population = NULL;
+	Individual* offsprings = NULL;
+	Problem* problem = NULL;
+
+
 	GA ();
 	GA(Problem* problem_)
 	{
@@ -72,7 +82,8 @@ public:
 	}
 
 
-    void eval_population(){
+    void eval_population()
+	{
 		if (problem == NULL || population == NULL)
 			error("Population seems empty.");
 		
@@ -87,18 +98,26 @@ public:
 
 		free(f);
 	}
+    void eval_offsprings()
+	{
+		if (problem == NULL || population == NULL)
+			error("Population seems empty.");
+		
+		float* f = fvector(problem->n_objectives);
+
+		for (int i = 0; i < population_size; ++i) {
+			objective_function(offsprings[i].x, f, population_size, problem->n_objectives);
+			offsprings[i].set_f(f, problem->n_objectives);
+		}
+
+
+		free(f);
+	}
 
 
 	void update_population();
 
 
-	int population_size = 0;
-	int max_generations = 100; // maximum number of generations
-	float p_m; // mutation probability
-	float p_c; // crossover probability
-	Individual* population = NULL;
-	Individual* offsprings = NULL;
-	Problem* problem = NULL;
 
 	
 };

@@ -2,8 +2,8 @@
 #define UTILS_H
 #include <time.h>
 
-#define min(a,b) (a < b ? a : b)
-#define max(a,b) (a > b ? a : b)
+// #define min(a,b) (a < b ? a : b)
+// #define max(a,b) (a > b ? a : b)
 
 /*
  * Print error message and exit the program.

@@ -24,6 +24,11 @@ void DTLZ2(float* x, float* F, int n, int m)
     
 }
 
+void tmp(float* x, float* F, int n, int m)
+{
+    
+}
+
 
 
 void objective_function(float* x, float* F, int n, int m){

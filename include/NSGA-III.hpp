@@ -1,5 +1,6 @@
 #ifndef NSGA_II_H
 
+#include <fstream>
 #include "basic-ga.hpp"
 #include "get-no-dominated.h"
 
@@ -12,6 +13,7 @@ class NSGAIII: public GA {
 
 	public:
 		float di = 20.0;
+		float dim = 20.0;
 
 		NSGAIII(Problem* problem_) 
 			: GA{problem_}
@@ -31,6 +33,7 @@ class NSGAIII: public GA {
         void run();
 
 		void sbx();
+		void realmutate();
 
 
 };
@@ -39,17 +42,41 @@ class NSGAIII: public GA {
 
 void NSGAIII::run()
 {
+	std::ofstream outputdat;
 
-    float start = ttime();
-    initialize_with_randoms();
-    eval_population();
-    gen_parents();
-    crossover();
-    mutate();
-    update_fronts(2*population_size);
-    survival();
-    std::cout << "time in second: " << ttime() - start << std::endl;
+	float start = ttime();
 
+
+	initialize_with_randoms();
+	eval_population();
+
+	for (int gen = 0; gen < 100; ++gen) {
+		printf("gen = %d\n", gen);
+
+		gen_parents();
+		crossover();
+		mutate();
+		update_fronts(2*population_size);
+		eval_offsprings();
+		survival();
+	}
+
+	std::cout << "time in second: " << ttime() - start << std::endl;
+	std::cout << "no dominated: " << n_fronts[0] << std::endl;
+
+
+
+	outputdat.open("data.dat");
+	for (int i = 0; i < n_fronts[0]; ++i) {
+		for (int j = 0; j < problem->n_objectives; ++j) {
+			outputdat << population[i].f[j] << " ";
+		}
+		
+		outputdat << std::endl;
+	}
+
+	outputdat.close();
+	
 
 }
 
@@ -218,9 +245,81 @@ void NSGAIII::sbx()
 
 void NSGAIII::mutate()
 {
-
+	realmutate();
 }
 
+
+void NSGAIII::realmutate()
+{
+	int i,j;
+	float rnd,delta,indi,deltaq;
+	float y,yl,yu,val,xy;
+
+	int popsize = population_size;
+	int nvar = problem->n_objectives;
+	float** lim_r = problem->bounds;
+	float pmut_r = p_c;
+
+	Individual* new_pop_ptr = offsprings;
+
+	for(j = 0;j < popsize;j++)
+	{
+		for (i = 0;i < nvar; i++)
+		{
+			rnd = rand01();
+
+			/*For each variable find whether to do mutation or not*/
+			if(rnd <= pmut_r)
+			{
+				y = new_pop_ptr[j].x[i];
+				yl = lim_r[i][0];
+				yu = lim_r[i][1];
+
+				if(y > yl)
+				{
+					/*Calculate delta*/
+
+					if((y-yl) < (yu-y))
+						delta = (y - yl)/(yu - yl);
+					else
+						delta = (yu - y)/(yu-yl);
+
+					rnd = rand01(); 
+
+					indi = 1.0/(dim +1.0);
+
+					if(rnd <= 0.5)
+					{
+						xy = 1.0-delta;
+						val = 2*rnd+(1-2*rnd)*(pow(xy,(dim+1)));
+						deltaq =  pow(val,indi) - 1.0;
+					}
+					else
+					{
+						xy = 1.0-delta;
+						val = 2.0*(1.0-rnd)+2.0*(rnd-0.5)*(pow(xy,(dim+1)));
+						deltaq = 1.0 - (pow(val,indi));
+					}
+
+					/*Change the value for the parent */
+					//  *ptr  = *ptr + deltaq*(yu-yl);
+					// Added by Deb (31/10/01)
+					y = y + deltaq * (yu-yl);
+					if (y < yl) y=yl; 
+					if (y > yu) y=yu;
+					new_pop_ptr[j].x[i] = y;
+				}
+				else // y == yl 
+				{
+					xy = rand01();
+					new_pop_ptr[j].x[i] = xy*(yu - yl) + yl;
+				}
+			}
+			//  ptr++;
+		}
+	}
+	return ;
+}
 
 void NSGAIII::survival()
 {

@@ -13,17 +13,15 @@ int main(int argc, char *argv[])
 
     printf("Hola cara de bola\n");
 
-
-
-    int population_size = 100;
-    int m = 5;
+    int population_size = 200;
+    int m = 3;
     int dim = m + 10 - 1;
     float** bounds = fmatrix(dim, 2);
 
 
     for (int i = 0; i < dim; ++i) {
-        bounds[i][0] = -1.0;
-        bounds[i][1] = 10.0;
+        bounds[i][0] = 0.0;
+        bounds[i][1] = 1.0;
     }
 
 
