@@ -8,12 +8,12 @@
 
 class NSGAIII: public GA {
     private:
-        int* fronts = NULL, *n_fronts = NULL;
         int* parent;
 
 	public:
 		float di = 20.0;
 		float dim = 20.0;
+        int* fronts = NULL, *n_fronts = NULL;
 
 		NSGAIII(Problem* problem_) 
 			: GA{problem_}
@@ -51,7 +51,6 @@ void NSGAIII::run()
 	eval_population();
 
 	for (int gen = 0; gen < 100; ++gen) {
-		printf("gen = %d\n", gen);
 
 		gen_parents();
 		crossover();

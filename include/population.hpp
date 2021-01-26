@@ -53,6 +53,16 @@ public:
 		set_f(f_new);
 	}
 
+	int get_dim()
+	{
+		return dimension;
+	}
+
+	int get_nfs()
+	{
+		return n_objectives;
+	}
+
 };
 
 
