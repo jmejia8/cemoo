@@ -1,3 +1,6 @@
+#ifndef POPULATION_H
+#define POPULATION_H
+
 class Individual
 {
 
@@ -38,7 +41,7 @@ public:
 
 
 	void set_f(float* f_new){
-		for (int i = 0; i < dimension; ++i) {
+		for (int i = 0; i < n_objectives; ++i) {
 			f[i] = f_new[i];
 		}
 	}
@@ -53,14 +56,22 @@ public:
 };
 
 
-Individual* gen_population(int pop_size){
-	return (Individual*) malloc(sizeof(Individual) * pop_size );
+Individual* gen_population(int pop_size, bool init){
+	Individual* tmp = (Individual*) malloc(sizeof(Individual) * pop_size );
+	if (!init)
+		return tmp;
+	
+	for (int i = 0; i < pop_size; ++i) {
+		tmp[i] = Individual();
+	}
+
+	return tmp;
 }
 
 void permutate_population(Individual* pop, int* mask, int pop_size)
 {
 
-	Individual* pop_new = gen_population(pop_size);
+	Individual* pop_new = gen_population(pop_size, false);
 
 	for (int i = 0; i < pop_size; ++i)
 		pop_new[i] = pop[i];
@@ -71,3 +82,4 @@ void permutate_population(Individual* pop, int* mask, int pop_size)
 
 }
 
+#endif

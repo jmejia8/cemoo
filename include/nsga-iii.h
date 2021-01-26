@@ -28,18 +28,6 @@ typedef struct {
 } Population;
 
 
-void fill_population(float* positions, int N, int n, float bounds[n][2]){
-    int i, j;
-    float l;
-    for (j = 0; j < n; ++j) {
-        l = bounds[j][1] - bounds[j][0];
-        for (i = 0; i < N; ++i) {
-            positions[i*n + j] = bounds[j][0] + l*rand01();
-        }
-    }
-
-}
-
 void eval_population(Population* P, int eval_offspring)
 {
 

@@ -1,3 +1,8 @@
+#ifndef EXTERNAL_PROBLEM
+#define EXTERNAL_PROBLEM
+
+#include <math.h>
+
 void DTLZ2(float* x, float* F, int n, int m)
 {
     int i,j, k = 10;
@@ -24,3 +29,5 @@ void DTLZ2(float* x, float* F, int n, int m)
 void objective_function(float* x, float* F, int n, int m){
     DTLZ2(x, F, n, m);
 }
+
+#endif

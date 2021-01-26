@@ -2,36 +2,44 @@
 #include <sort.h>
 #include <utils.h>
 
+#include "external_problem.h"
 #include "population.hpp"
+#include "basic-ga.hpp"
 
 using namespace std;
 
 int main(int argc, char *argv[])
 {
-    printf("Hola mundo\n");
 
-    int pop_size = 10;
-    Individual* pop = gen_population(pop_size) ;
-    int* mask = ivector(pop_size);
+    printf("Hola cara de bola\n");
 
 
-    for (int i = 0; i < pop_size; ++i) {
-        pop[i] = Individual();
-        pop[i].set_x(fvector(7), 7);
-        pop[i].x[0] = (float)i;
-        printf("%f ", pop[i].x[0]);
-        mask[i] = pop_size - i - 1;
+
+    int population_size = 100;
+    int m = 5;
+    int dim = m + 10 - 1;
+    float** bounds = fmatrix(dim, 2);
+
+
+    for (int i = 0; i < dim; ++i) {
+        bounds[i][0] = -1.0;
+        bounds[i][1] = 10.0;
     }
 
 
-    permutate_population(pop, mask, pop_size);
+    Problem* p = new Problem(dim, m, bounds);
 
-    printf("\n---------\n");
+    BasicGeneticAlgorithm* ga = new BasicGeneticAlgorithm(p);
 
-    for (int i = 0; i < pop_size; ++i) {
-        printf("%f ", pop[i].x[0]);
-    }
-    printf("\n");
+    float start = ttime();
+    ga->set_population_size(population_size);
+    ga->initialize_with_randoms();
+    ga->eval_population();
+    std::cout << "time in second: " << ttime() - start << std::endl;
+
+
+
+    printf("adiosin\n");
 
 
     

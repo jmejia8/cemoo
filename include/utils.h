@@ -1,10 +1,15 @@
 #ifndef UTILS_H
 #define UTILS_H
+#include <time.h>
+
+#define min(a,b) (a < b ? a : b)
+#define max(a,b) (a > b ? a : b)
+
 /*
  * Print error message and exit the program.
  * */
 void error(const char* message) {
-    printf("ERROR: %s\n", message);
+    printf("\033[31mERROR: %s\033[0m\n", message);
     exit(1);
 }
 
@@ -49,6 +54,22 @@ int** imatrix(int rows, int cols) {
 }
 
 
+
+float** fmatrix(int rows, int cols) {
+    float** matrix = (float**) malloc(rows * sizeof(int*));
+    if (!matrix) {
+        error("Error allocating memory\n");
+    }
+
+    int i;
+    for (i = 0; i < rows; ++i) {
+        matrix[i] = fvector(cols);
+    }
+
+    return matrix;
+}
+
+
 /*
  * get column col via vec in a matrix 
  * */
@@ -70,7 +91,7 @@ void print_vector(float* v, int len)
     int i;
 
     for (i = 0; i < len; ++i) {
-        printf("%2.04f ", v[i]);
+        printf("%+2.04f ", v[i]);
     }
 
     printf("\n");
@@ -87,7 +108,7 @@ void print_matrix(float* m, int rows, int cols)
 
     for (i = 0; i < rows; ++i) {
         for (j = 0; j < cols; ++j) {
-            printf("%2.04f ", m[i*cols + j]);
+            printf("%+2.04f ", m[i*cols + j]);
         }
         printf("\n");
     }
@@ -163,6 +184,10 @@ void fill_ideal(float* ideal, float* fvalues, int N, int m)
         }
     }
 
+}
+
+float ttime(){
+    return ((float) clock() ) / CLOCKS_PER_SEC;
 }
 
 #endif
