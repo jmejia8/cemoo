@@ -18,7 +18,9 @@ void DTLZ2(float* x, float* F, int n, int m)
             F[i] *= cos(x[j] * M_PI / 2.0 );
         }
         
-        F[i] *=  sin(x[m-i-1] * M_PI / 2.0 );
+        if (i == 0) {
+            F[i] *=  sin(x[m-i-1] * M_PI / 2.0 );
+        }
 
     }
     

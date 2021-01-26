@@ -337,14 +337,14 @@ void NSGAIII::gen_parents()
 {
     if (parent == NULL){
         parent = ivector(population_size);
-        for (int i = 0; i < problem->dimension; ++i) {
+        for (int i = 0; i < population_size; ++i) {
             parent[i] = i;
         }
     }
 
     // generate a random permutation
     randperm(parent, population_size);
-    
+
 }
 
 
