@@ -30,6 +30,14 @@ public:
 
 			html_file <<  "var trace" << i << " = {\n";
 			html_file << "type: 'scatter', mode: '',\n";
+			html_file << "name: 'Solution " << i << "',\n";
+
+			html_file << "x: [ ";
+			for (int j = 0; j < m; ++j) {
+				html_file << j+1 << ",";
+			}
+			html_file << "],\n";
+
 			html_file << "y: [ ";
 			for (int j = 0; j < m; ++j) {
 				html_file << population[i].x[j] << ",";
@@ -44,6 +52,11 @@ public:
 		}
 		html_file << " ];\n";
 
+		html_file << " layout.showlegend=false;\n";
+		html_file << " layout.width=900;\n";
+		html_file << " layout.title='Non-dominated solutions';\n";
+		html_file << " layout.xaxis.title='f';\n";
+		html_file << " layout.yaxis.title='f value';\n";
 		
 	}
 
@@ -114,7 +127,7 @@ public:
 		int j = 0;
 		while (std::getline(template_file, line)) {
 			++j;
-			if (j != 12) {
+			if (j != 27) {
 				html_file << line << std::endl;
 				continue;
 			}
