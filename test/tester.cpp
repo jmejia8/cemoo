@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     srand(time(NULL));
 
     int population_size = 100;
-    int m = 2;
+    int m = 10;
     int dim = m + 10 - 1;
     float** bounds = fmatrix(dim, 2);
 

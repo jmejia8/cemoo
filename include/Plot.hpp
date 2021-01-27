@@ -29,7 +29,7 @@ public:
 		for (int i = 0; i < population_size; ++i) {
 
 			html_file <<  "var trace" << i << " = {\n";
-			html_file << "type: 'scatter', mode: 'lines',\n";
+			html_file << "type: 'scatter', mode: '',\n";
 			html_file << "y: [ ";
 			for (int j = 0; j < m; ++j) {
 				html_file << population[i].x[j] << ",";
@@ -133,7 +133,7 @@ public:
 
 	void show()
 	{
-		system("open plot/tmp.html");
+		system("gnome-open plot/tmp.html");
 		system("exo-open plot/tmp.html");
 		std::cout << "Opening plot/tmp.html in your web browser" << std::endl;
 	}
