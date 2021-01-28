@@ -1,6 +1,7 @@
 #ifndef PLOT_H
 #define PLOT_H
 
+#include <stdlib.h>
 #include <string>
 #include <fstream>
 #include <sstream>
