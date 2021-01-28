@@ -222,3 +222,120 @@ char compare(float* a, float* b, int k)
     
 }
 
+
+void update_ideal(float* ideal, float* f, int len)
+{
+    for (int i = 0; i < len; ++i) {
+        if (ideal[i] > f[i])
+            ideal[i] = f[i];
+    }
+}
+
+
+void update_nadir(float* nadir, float* f, int len)
+{
+    for (int i = 0; i < len; ++i) {
+        if (nadir[i] < f[i])
+            nadir[i] = f[i];
+    }
+}
+
+
+int factorial(int m, int n)
+{
+    int v = 1;
+    for (int i = m; i <= n; ++i)
+        v *= i;
+    return v;
+}
+
+int nCr(int n, int r)
+{
+    return factorial(r + 1, n) / factorial(1, n-r);
+}
+
+/**
+def das_dennis_recursion(ref_dirs, ref_dir, n_partitions, beta, depth):
+    if depth == len(ref_dir) - 1:
+        ref_dir[depth] = beta / (1.0 * n_partitions)
+        ref_dirs.append(ref_dir[None, :])
+    else:
+        for i in range(beta + 1):
+            ref_dir[depth] = 1.0 * i / (1.0 * n_partitions)
+            das_dennis_recursion(ref_dirs, np.copy(ref_dir), n_partitions, beta - i, depth + 1)
+  */
+
+void das_dennis_recursion(float** ref_dirs, float* ref_dir,int n_partitions,int beta,int depth, int n_dim, int* len)
+{
+    if (depth == n_dim - 1) {
+        ref_dir[depth] = (float) beta / (1.0 * n_partitions);
+        for (int i = 0; i < n_dim; ++i){
+            ref_dirs[*len][i] = ref_dir[i];
+        }
+        *len = *len + 1;
+        return;
+    }
+
+    float* ref_dir_copy = fvector(n_dim);
+
+    for (int i = 0; i < beta + 1; ++i) {
+        ref_dir[depth] = 1.0 * (float) i / (1.0 * n_partitions);
+
+        // copy ref_dir
+        for (int j = 0; j < n_dim; ++j) ref_dir_copy[i] = ref_dir[i];
+
+        das_dennis_recursion(ref_dirs, ref_dir_copy, n_partitions, beta - i, depth + 1, n_dim, len);
+    }
+
+    free(ref_dir_copy);
+}
+
+
+
+/****
+
+
+def das_dennis(n_partitions, n_dim):
+    if n_partitions == 0:
+        return np.full((1, n_dim), 1 / n_dim)
+    else:
+        ref_dirs = []
+        ref_dir = np.full(n_dim, np.nan)
+        das_dennis_recursion(ref_dirs, ref_dir, n_partitions, n_partitions, 0)
+        return np.concatenate(ref_dirs, axis=0)
+**/
+
+float** das_dennis(int n_partitions, int n_dim, int* len)
+{
+
+    int n = nCr(n_dim + n_partitions-1, n_partitions);
+    *len = 0;
+
+    float** ref_dirs = fmatrix(n, n_dim);
+
+    if (n_partitions == 0) {
+        for (int i = 0; i < n_dim; ++i) {
+            ref_dirs[0][i] = 1.0 / (float) n_dim;
+        }
+        *len = 1;
+        return ref_dirs;
+    }
+
+    
+    float* ref_dir = fvector(n_dim);
+    das_dennis_recursion(ref_dirs, ref_dir, n_partitions, n_partitions, 0, n_dim, len);
+
+    printf("%d ", *len);
+    //*len = n;
+
+    free(ref_dir);
+
+
+    return ref_dirs;
+
+
+}
+
+
+
+
