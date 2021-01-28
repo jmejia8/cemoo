@@ -12,8 +12,10 @@ class NSGAIII: public GA {
 		float di = 10.0;
 		float dim = 50.0;
         int* fronts = NULL, *n_fronts = NULL;
+        float** ref_dirs = NULL;
 
 		NSGAIII(Problem* problem_) ;
+        NSGAIII(Problem* problem_, int population_size);
         ~NSGAIII();
 
         void gen_parents();
@@ -27,6 +29,8 @@ class NSGAIII: public GA {
 		void sbx();
 		void realmutate();
 
+		void associate_to_niches();
+		void normalize();
 
 };
 

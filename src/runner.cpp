@@ -9,7 +9,7 @@ using namespace std;
 int main(int argc, char *argv[])
 {
 
-    printf("Staring main...\n");
+    printf("Starting main...\n");
     srand(time(NULL));
 
     int population_size = 100;
@@ -26,19 +26,16 @@ int main(int argc, char *argv[])
 
     Problem* p = new Problem(dim, m, bounds);
 
-    NSGAIII* ga = new NSGAIII(p);
+    NSGAIII* ga = new NSGAIII(p, population_size);
     ga->max_generations = 500;
 
-    ga->set_population_size(population_size);
     ga->run();
 
 
     Plot plt;
 
     plt.scatter(ga->population, ga->n_fronts[0]);
-    plt.show();
-
-    printf("adiosin\n");
+    //plt.show();
 
 
     

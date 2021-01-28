@@ -12,9 +12,14 @@
 NSGAIII::NSGAIII(Problem* problem_) : GA{problem_}
 {};
 
+
+NSGAIII::NSGAIII(Problem* problem_, int population_size) : GA{problem_, population_size}
+{};
+
 NSGAIII::~NSGAIII(){
 	free(fronts);
 	free(n_fronts);
+	free(ref_dirs);
 }
 
 void NSGAIII::run()
@@ -306,7 +311,7 @@ void NSGAIII::survival()
     permutate_population(population, fronts, 2*population_size);
 
     restart_fronts();
-    
+    associate_to_niches();
 }
 
 
@@ -453,5 +458,43 @@ void NSGAIII::update_fronts(int pop_size)
     }
     
 
+}
+
+
+
+void NSGAIII::associate_to_niches()
+{
+
+
+	int m = problem->n_objectives;
+	int len = 0;
+	int n_partitions = 12;
+
+	if (ref_dirs == NULL)
+		ref_dirs = das_dennis(n_partitions, m, &len);
+	
+	float* denom = fvector(m);
+
+	for (int i = 0; i < m; ++i) {
+		denom[i] = nadir[i] - ideal[i];
+		if (denom[i] < EPS)
+			denom[i] = EPS;
+	}
+
+	// normalize by ideal point and intercepts
+	// N = (F - ideal) / denom;
+	//
+	float** N = fmatrix(population_size, m);
+	for (int i = 0; i < population_size; ++i) {
+		for (int j = 0; j < m; ++j) {
+			N[i][j] = (population[i].f[j] - ideal[j]) / denom[j];
+		}
+	}
+
+
+
+
+	free(denom);
+	free(N);
 }
 

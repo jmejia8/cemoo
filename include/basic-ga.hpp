@@ -38,6 +38,11 @@ public:
 	int max_generations = 100; // maximum number of generations
 	float p_m = 0.01; // mutation probability
 	float p_c = 0.9; // crossover probability
+
+	float* ideal = NULL;
+	float* nadir = NULL;
+	float* utopian = NULL;
+
 	Individual* population = NULL;
 	Individual* offsprings = NULL;
 	Problem* problem = NULL;
@@ -46,6 +51,7 @@ public:
 	GA ();
 	~GA ();
 	GA(Problem* problem_);
+	GA(Problem* problem_, int population_size_);
 	void set_population_size(int population_size_);
 	void initialize_with_randoms();
     void eval_population();

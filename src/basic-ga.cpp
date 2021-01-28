@@ -1,3 +1,4 @@
+#include <math.h>
 #include "utils.h"
 #include "population.hpp"
 #include "random.h"
@@ -11,9 +12,31 @@ GA::GA(Problem* problem_)
 }
 
 
+GA::GA(Problem* problem_, int population_size_){
+	problem = problem_;
+	set_population_size(population_size_);
+
+	ideal = fvector(problem->n_objectives);
+	nadir = fvector(problem->n_objectives);
+	utopian = fvector(problem->n_objectives);
+
+	float Inf = 1.0 / 0.0;
+	for (int i = 0; i < problem->n_objectives; ++i) {
+		ideal[i]   = Inf;
+		nadir[i]   = -Inf;
+		utopian[i] = Inf;
+	}
+}
+
+
 GA::~GA (){
 	delete[] population;
 	delete problem;
+
+
+	free(ideal);
+	free(nadir);
+	free(utopian);
 }
 
 
@@ -60,6 +83,9 @@ void GA::eval_population()
 		objective_function(population[i].x, f, population_size, problem->n_objectives);
 		population[i].set_f(f, problem->n_objectives);
 		offsprings[i].set_f(f, problem->n_objectives);
+
+		update_ideal(ideal, f, problem->n_objectives);
+		update_nadir(nadir, f, problem->n_objectives);
 	}
 
 
@@ -76,6 +102,9 @@ void GA::eval_offsprings()
 	for (int i = 0; i < population_size; ++i) {
 		objective_function(offsprings[i].x, f, population_size, problem->n_objectives);
 		offsprings[i].set_f(f, problem->n_objectives);
+
+		update_ideal(ideal, f, problem->n_objectives);
+		update_nadir(nadir, f, problem->n_objectives);
 	}
 
 

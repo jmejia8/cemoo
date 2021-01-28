@@ -1,6 +1,9 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+
+#define EPS 1e-12 
+
 // #define min(a,b) (a < b ? a : b)
 // #define max(a,b) (a > b ? a : b)
 
@@ -62,5 +65,17 @@ float ttime();
 
 
 char compare(float* a, float* b, int k);
+
+float norm_point_to_line(float* s, float* w, int len);
+
+
+void update_nadir(float* nadir, float* f, int len);
+void update_ideal(float* ideal, float* f, int len);
+
+
+int factorial(int m, int n);
+int nCr(int n, int r);
+void das_dennis_recursion(float** ref_dirs, float* ref_dir,int n_partitions,int beta,int depth, int n_dim, int* len);
+float** das_dennis(int n_partitions, int n_dim, int* len);
 
 #endif
