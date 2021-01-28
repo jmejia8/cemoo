@@ -13,6 +13,8 @@ class NSGAIII: public GA {
 		float dim = 50.0;
         int* fronts = NULL, *n_fronts = NULL;
         float** ref_dirs = NULL;
+        int n_ref_dirs = 0;
+        int n_partitions = 12;
 
 		NSGAIII(Problem* problem_) ;
         NSGAIII(Problem* problem_, int population_size);

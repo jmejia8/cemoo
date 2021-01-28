@@ -4,7 +4,7 @@ float dot(float* u, float* v, int len){
     int i;
     float s = 0;
     for (i = 0; i < len; ++i) {
-        s += u[i] * v[j];
+        s += u[i] * v[i];
     }
 
     return s;

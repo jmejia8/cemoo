@@ -467,11 +467,9 @@ void NSGAIII::associate_to_niches()
 
 
 	int m = problem->n_objectives;
-	int len = 0;
-	int n_partitions = 12;
 
 	if (ref_dirs == NULL)
-		ref_dirs = das_dennis(n_partitions, m, &len);
+		ref_dirs = das_dennis(n_partitions, m, &n_ref_dirs);
 	
 	float* denom = fvector(m);
 
@@ -491,10 +489,16 @@ void NSGAIII::associate_to_niches()
 		}
 	}
 
-
-
+	float** M = fmatrix(population_size, n_ref_dirs);
+	for (int i = 0; i < population_size; ++i) {
+		for (int j = 0; j < n_ref_dirs; ++j) {
+			M[i][j] = norm_point_to_line(N[i], ref_dirs[j], m);
+			M[j][i] = M[i][j];
+		}
+	}
 
 	free(denom);
 	free(N);
+	free(M);
 }
 
