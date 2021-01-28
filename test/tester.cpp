@@ -1,12 +1,11 @@
 #include <iostream>
-#include <sort.h>
-#include <utils.h>
 #include <time.h>
 
-#include "external_problem.h"
+#include "utils.h"
+#include "external-problem.h"
 #include "population.hpp"
 #include "NSGA-III.hpp"
-#include "Plot.hpp"
+#include "plot.hpp"
 
 using namespace std;
 
