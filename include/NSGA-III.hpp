@@ -9,8 +9,8 @@ class NSGAIII: public GA {
         int* parent;
 
 	public:
-		float di = 10.0;
-		float dim = 50.0;
+		float di = 30.0;
+		float dim = 20.0;
         int* fronts = NULL, *n_fronts = NULL;
         float** ref_dirs = NULL;
         int n_ref_dirs = 0;

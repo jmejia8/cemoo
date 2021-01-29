@@ -467,10 +467,35 @@ void NSGAIII::associate_to_niches()
 
 
 	int m = problem->n_objectives;
+	int K = 0;
 
 	if (ref_dirs == NULL)
 		ref_dirs = das_dennis(n_partitions, m, &n_ref_dirs);
-	
+
+
+	// until last front
+	int l = 0, S_size = 0;
+	do {
+		S_size += n_fronts[++l];
+	} while ( S_size < population_size );
+	--l;
+
+	// no niching is requiered
+	if (S_size == population_size) {
+		// printf("No niching is requiered.\n");
+		return;
+	}
+
+
+	K = population_size - S_size + n_fronts[l];
+	int last_front_size = n_fronts[l];
+	int incomplete_pop_size = S_size - n_fronts[l];
+
+	// printf("last_front_size == %d \n", last_front_size);
+	// printf("incomplete_pop_size == %d \n", incomplete_pop_size);
+	// printf("K = %d\n", K);
+
+
 	float* denom = fvector(m);
 
 	for (int i = 0; i < m; ++i) {
@@ -482,24 +507,51 @@ void NSGAIII::associate_to_niches()
 	// normalize by ideal point and intercepts
 	// N = (F - ideal) / denom;
 	//
-	float** N = fmatrix(population_size, m);
-	for (int i = 0; i < population_size; ++i) {
+	float** N = fmatrix(last_front_size, m);
+	Individual* last_front = &population[incomplete_pop_size];
+
+	for (int i = 0; i < last_front_size; ++i) {
 		for (int j = 0; j < m; ++j) {
-			N[i][j] = (population[i].f[j] - ideal[j]) / denom[j];
+			N[i][j] = (last_front[i].f[j] - ideal[j]) / denom[j];
 		}
 	}
 
-	float** M = fmatrix(population_size, n_ref_dirs);
-	for (int i = 0; i < population_size; ++i) {
+	// w in Zr nearest to s in S
+	int* pi = ivector(last_front_size);
+	for (int i = 0; i < last_front_size; ++i)
+		pi[i] = 0;
+
+	// nich count
+	int* rho = ivector(n_ref_dirs);
+	for (int i = 0; i < n_ref_dirs; ++i)
+		rho[i] = 0;
+
+	// M[i,j] = d'(s,w)
+	//float** M = fmatrix(last_front_size, n_ref_dirs);
+	float d, d_min;
+	for (int i = 0; i < last_front_size; ++i) {
+		d_min = 1.0 / 0.0;
+		// find wj nearest to si
 		for (int j = i; j < n_ref_dirs; ++j) {
-			M[i][j] = norm_point_to_line(N[i], ref_dirs[j], m);
-			M[j][i] = M[i][j];
+			// M[i][j] = norm_point_to_line(N[i], ref_dirs[j], m);
+			//M[j][i] = M[i][j];
+			d = norm_point_to_line(N[i], ref_dirs[j], m);
+			if (d_min > d) {
+				d_min = d;
+				pi[i] = j;
+			}
 		}
+
 	}
 
+	// find those niches where nich count is minimum (say jj )
+	// find s in last front such that jj is its corresponding nich
+	// --------
+	// find those s in last front such that nich count is minimum
+	// append such s to P_new and update the niches count.
 
 	free(denom);
 	free(N);
-	free(M);
+	//free(M);
 }
 
