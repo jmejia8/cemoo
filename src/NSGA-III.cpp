@@ -571,18 +571,22 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
 	if (K <= 0) {
 		return;
 	}
+
+	printf("asdf fdsa asdf \n");
 	int k = 0;
 	int i = 0, j = 0, J_min_size = 0, j_hat;
 	int pop_new_size = 0;
 
-	int* pop_new = ivector(K);
+
+	int* pop_new = ivector(K+1);
 	int* mask = ivector(n_ref_dirs);
 	for (int i = 0; i < n_ref_dirs; ++i)
 		mask[i] = i;
 
 	sortperm(rho, mask, n_ref_dirs);
 
-	while( k < K){
+	while( k < K && J_min_size < n_ref_dirs){
+		printf("epale\n");
 		int rho_min = rho[ mask[J_min_size] ];
 		// those pho_j such that are equal to the current minimum
 		// while (mask[J_min_size] == rho_min) ++J_min_size;
@@ -603,11 +607,11 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
 			if (rho_min == 0) {
 				if (d_min < 0 || d_min > distances_s_to_w[ last_front[i] ]){
 					d_min = distances_s_to_w[ last_front[i] ];
-					i_d_min = last_front[i];
+					i_d_min = i; //last_front[i];
 				}
 			}else{
 				/// HERE YOU NEED ADDING RANDIM CHOISES
-				i_d_min = last_front[i];
+				i_d_min = i; //last_front[i];
 				break;
 			}
 
@@ -624,9 +628,11 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
 			}
 
 			if (is_repeated) {
+				++J_min_size;
 				continue;
 			}
 
+			pop_new[pop_new_size++] = last_front[i_d_min];
 			rho[pi[last_front[i_d_min]]] += 1;
 			++k;
 		}else{
@@ -636,8 +642,20 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
 
 	}
 
-	printf("K = %d\n", K);
-	// permutate_population(&population[population_size - K], pop_new, K);
+	if (pop_new_size == 0) {
+		return;
+	}
+	K = pop_new_size;
+
+	int n = population_size - K;
+	Individual* P_tmp = (Individual*) malloc(K * sizeof(Individual));
+	for (int i = 0; i < K; ++i) {
+		P_tmp[i] = population[pop_new[i]];
+	}
+
+	for (int i = n; i < population_size; ++i) {
+		population[i] = P_tmp[i-n];
+	}
 	
 	free(mask);
 	free(pop_new);
