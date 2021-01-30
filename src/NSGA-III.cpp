@@ -504,21 +504,24 @@ void NSGAIII::associate_to_niches()
 			denom[i] = EPS;
 	}
 
+	
+	int parent_childre_size = 2*population_size;
+	float* distances_s_to_w = fvector(parent_childre_size);
+
+
 	// normalize by ideal point and intercepts
 	// N = (F - ideal) / denom;
-	//
-	float** N = fmatrix(last_front_size, m);
-	Individual* last_front = &population[incomplete_pop_size];
+	float** N = fmatrix(parent_childre_size, m);
 
-	for (int i = 0; i < last_front_size; ++i) {
+	for (int i = 0; i < parent_childre_size; ++i) {
 		for (int j = 0; j < m; ++j) {
-			N[i][j] = (last_front[i].f[j] - ideal[j]) / denom[j];
+			N[i][j] = (population[i].f[j] - ideal[j]) / denom[j];
 		}
 	}
 
 	// w in Zr nearest to s in S
-	int* pi = ivector(last_front_size);
-	for (int i = 0; i < last_front_size; ++i)
+	int* pi = ivector(parent_childre_size);
+	for (int i = 0; i < parent_childre_size; ++i)
 		pi[i] = 0;
 
 	// nich count
@@ -529,20 +532,24 @@ void NSGAIII::associate_to_niches()
 	// M[i,j] = d'(s,w)
 	//float** M = fmatrix(last_front_size, n_ref_dirs);
 	float d, d_min;
-	for (int i = 0; i < last_front_size; ++i) {
+	for (int i = 0; i < parent_childre_size; ++i) {
 		d_min = 1.0 / 0.0;
 		// find wj nearest to si
-		for (int j = i; j < n_ref_dirs; ++j) {
+		for (int j = 0; j < n_ref_dirs; ++j) {
 			// M[i][j] = norm_point_to_line(N[i], ref_dirs[j], m);
 			//M[j][i] = M[i][j];
 			d = norm_point_to_line(N[i], ref_dirs[j], m);
 			if (d_min > d) {
 				d_min = d;
 				pi[i] = j;
+				distances_s_to_w[i] = d;
 			}
 		}
 
+		rho[ pi[i] ] += 1;
 	}
+
+	niching(K, rho, pi, distances_s_to_w, &fronts[incomplete_pop_size], last_front_size );
 
 	// find those niches where nich count is minimum (say jj )
 	// find s in last front such that jj is its corresponding nich
@@ -552,6 +559,88 @@ void NSGAIII::associate_to_niches()
 
 	free(denom);
 	free(N);
+	free(rho);
+	free(pi);
+	free(distances_s_to_w);
 	//free(M);
 }
 
+
+void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* last_front, int last_front_size)
+{
+	if (K <= 0) {
+		return;
+	}
+	int k = 0;
+	int i = 0, j = 0, J_min_size = 0, j_hat;
+	int pop_new_size = 0;
+
+	int* pop_new = ivector(K);
+	int* mask = ivector(n_ref_dirs);
+	for (int i = 0; i < n_ref_dirs; ++i)
+		mask[i] = i;
+
+	sortperm(rho, mask, n_ref_dirs);
+
+	while( k < K){
+		int rho_min = rho[ mask[J_min_size] ];
+		// those pho_j such that are equal to the current minimum
+		// while (mask[J_min_size] == rho_min) ++J_min_size;
+		// IMPORTANT, HERE YOU NEED ADD RANDOM CHOISES
+		j_hat = mask[J_min_size];// <-- randint(0, J_min_size);
+		////////////
+
+		float d_min = -1;
+		bool I_j_hat_is_empty = true;
+		int i_d_min;
+		// for each item in I_j_hat
+		for (int i = 0; i < last_front_size; ++i) {
+			if ( pi[ last_front[i] ] != j_hat )
+				continue;
+
+			I_j_hat_is_empty = false;
+			// I_j_hat is not empty
+			if (rho_min == 0) {
+				if (d_min < 0 || d_min > distances_s_to_w[ last_front[i] ]){
+					d_min = distances_s_to_w[ last_front[i] ];
+					i_d_min = last_front[i];
+				}
+			}else{
+				/// HERE YOU NEED ADDING RANDIM CHOISES
+				i_d_min = last_front[i];
+				break;
+			}
+
+		}
+
+
+		if (!I_j_hat_is_empty) {
+			bool is_repeated = false;
+			for (int i = 0; i < pop_new_size; ++i) {
+				if (pop_new[i] == last_front[i_d_min]) {
+					is_repeated = true;
+					break;
+				}
+			}
+
+			if (is_repeated) {
+				continue;
+			}
+
+			rho[pi[last_front[i_d_min]]] += 1;
+			++k;
+		}else{
+			// here implement to ignore current j_hat
+			++J_min_size;
+		}
+
+	}
+
+	printf("K = %d\n", K);
+	// permutate_population(&population[population_size - K], pop_new, K);
+	
+	free(mask);
+	free(pop_new);
+
+
+}

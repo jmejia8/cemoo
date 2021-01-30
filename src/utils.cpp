@@ -316,3 +316,26 @@ float** das_dennis(int n_partitions, int n_dim, int* len)
 
 
 
+void sortperm(int *A, int* mask, int len)
+{
+  if (len < 2) return;
+ 
+  float pivot = A[ mask[ len / 2]];
+ 
+  int i, j;
+  for (i = 0, j = len - 1; ; i++, j--) {
+
+    while (A[mask[i]] < pivot) i++;
+    while (A[mask[j]] > pivot) j--;
+ 
+    if (i >= j) break;
+ 
+
+    int temp     = mask[i];
+    mask[i]  = mask[j];
+    mask[j]  = temp;
+  }
+ 
+  sortperm(A, mask, i);
+  sortperm(A , mask + i, len - i);
+}

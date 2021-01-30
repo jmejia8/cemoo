@@ -78,4 +78,10 @@ int nCr(int n, int r);
 void das_dennis_recursion(float** ref_dirs, float* ref_dir,int n_partitions,int beta,int depth, int n_dim, int* len);
 float** das_dennis(int n_partitions, int n_dim, int* len);
 
+
+
+void sortperm(int *A, int* mask, int len);
+
+
+
 #endif

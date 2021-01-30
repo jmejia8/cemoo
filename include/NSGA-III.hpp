@@ -33,6 +33,7 @@ class NSGAIII: public GA {
 
 		void associate_to_niches();
 		void normalize();
+        void niching(int K, int* rho, int* pi, float* distances_s_to_w, int* last_front, int last_front_size);
 
 };
 
