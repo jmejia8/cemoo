@@ -508,12 +508,11 @@ void NSGAIII::associate_to_niches()
         // printf("No niching is requiered.\n");
         return;
     }
-    S_size -= n_fronts[l];
 
-
-    K = population_size - S_size;
+    int tmp = S_size - n_fronts[l];
+    K = population_size - tmp;
     int last_front_size = n_fronts[l];
-    int incomplete_pop_size = S_size;
+    int incomplete_pop_size = tmp;
 
     update_ideal_nadir(fronts, n_fronts[0]);
  
@@ -544,7 +543,7 @@ void NSGAIII::associate_to_niches()
     // w in Zr nearest to s in S
     int* pi = ivector(parent_childre_size);
     for (int i = 0; i < parent_childre_size; ++i)
-        pi[i] = 0;
+        pi[i] = -1;
 
     // nich count
     int* rho = ivector(n_ref_dirs);
@@ -554,7 +553,7 @@ void NSGAIII::associate_to_niches()
     // M[i,j] = d'(s,w)
     //float** M = fmatrix(last_front_size, n_ref_dirs);
     float d, d_min;
-    for (int i = 0; i < parent_childre_size; ++i) {
+    for (int i = 0; i < S_size; ++i) {
         d_min = -1;
         // find wj nearest to si
         for (int j = 0; j < n_ref_dirs; ++j) {
@@ -609,8 +608,11 @@ int argmin_random(int* array, bool* used_dir, int len){
         }
     }
 
+    if (n_minimums == 0) {
+        error("Fail associate niches.");
+    }
+
     i_min = randint(0, n_minimums);
-    printf("n_minimums = %d\n", n_minimums);
 
     return minimums[i_min];
 
@@ -642,21 +644,20 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
 
 
     bool used_dir[n_ref_dirs];
+    printf("------\n");
     for (i = 0; i < n_ref_dirs; ++i) {
         used_dir[i] = false;
+        printf("%d ", rho[i]);
     }
+
+    printf("\n");
 
 
     // while population is still incomplete
     while( k < K){
+
         // order rho values (order in mask)
         j_hat = argmin_random(rho, used_dir, n_ref_dirs);
-        printf("j_hat = %d\n", j_hat);
-
-        printf("perate %d %d\n", k, K);
-
-        int rho_min = rho[ j_hat ];
-        // those pho_j such that are equal to the current minimum
 
         I_j_hat_size = 0;
         for (i = 0; i < last_front_size; ++i) {
@@ -669,26 +670,24 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
             used_dir[j_hat] = true;
             continue;
         }
-        printf("pasale\n");
 
         // I_j_hat is not empty
         if (rho[j_hat] == 0) {
            
             i_d_min = I_j_hat[0];
             d_min = distances_s_to_w[ i_d_min ];
-            // find hat with min distance
+            // find s with min distance
             for (i = 1; i < I_j_hat_size; ++i) {
                 if (d_min > distances_s_to_w[ I_j_hat[i] ]){
                     d_min = distances_s_to_w[ I_j_hat[i] ];
                     i_d_min = I_j_hat[i]; //last_front[i];
                 }
             }
-            
-
             pop_new[ pop_new_size++ ] = i_d_min;
         } else {
             // add random choises
-            pop_new[pop_new_size++] = I_j_hat[0];
+            i_d_min = randint(0, I_j_hat_size);
+            pop_new[pop_new_size++] = I_j_hat[i_d_min];
         }
 
         rho[j_hat] += 1;
@@ -708,13 +707,6 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
         return;
     }
     K = pop_new_size;
-
-    printf("===========\n");
-    for ( i = 0; i < K; ++i) {
-        printf("%d ", pop_new[i]);
-    }
-
-    printf("\n");
 
     int n = population_size - K;
     Individual* P_tmp = (Individual*) malloc(K * sizeof(Individual));
