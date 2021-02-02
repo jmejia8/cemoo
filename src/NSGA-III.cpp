@@ -644,13 +644,9 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
 
 
     bool used_dir[n_ref_dirs];
-    printf("------\n");
     for (i = 0; i < n_ref_dirs; ++i) {
         used_dir[i] = false;
-        printf("%d ", rho[i]);
     }
-
-    printf("\n");
 
 
     // while population is still incomplete
