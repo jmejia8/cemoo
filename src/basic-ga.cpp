@@ -20,12 +20,6 @@ GA::GA(Problem* problem_, int population_size_){
 	nadir = fvector(problem->n_objectives);
 	utopian = fvector(problem->n_objectives);
 
-	float Inf = 1.0 / 0.0;
-	for (int i = 0; i < problem->n_objectives; ++i) {
-		ideal[i]   = Inf;
-		nadir[i]   = -Inf;
-		utopian[i] = Inf;
-	}
 }
 
 
@@ -84,8 +78,6 @@ void GA::eval_population()
 		population[i].set_f(f, problem->n_objectives);
 		offsprings[i].set_f(f, problem->n_objectives);
 
-		update_ideal(ideal, f, problem->n_objectives);
-		update_nadir(nadir, f, problem->n_objectives);
 	}
 
 
@@ -103,8 +95,6 @@ void GA::eval_offsprings()
 		objective_function(offsprings[i].x, f, population_size, problem->n_objectives);
 		offsprings[i].set_f(f, problem->n_objectives);
 
-		update_ideal(ideal, f, problem->n_objectives);
-		update_nadir(nadir, f, problem->n_objectives);
 	}
 
 

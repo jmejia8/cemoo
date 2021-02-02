@@ -37,8 +37,8 @@ void NSGAIII::run()
         gen_parents();
         crossover();
         mutate();
-        update_fronts(2*population_size);
         eval_offsprings();
+        update_fronts(2*population_size);
         survival();
     }
 
@@ -460,7 +460,29 @@ void NSGAIII::update_fronts(int pop_size)
 
 }
 
+void NSGAIII::update_ideal_nadir(int* non_dominated, int len)
+{
+    int m = problem->n_objectives;
+    // asume first solution is nadir and ideal
+    for (int j = 0; j < m; ++j) {
+        ideal[j] = population[non_dominated[0]].f[j];
+        nadir[j] = population[non_dominated[0]].f[j];
+    }
+    
+    // update on non_dominated
+    for (int i = 1; i < len; ++i) {
+        for (int j = 0; j < m; ++j) {
+            if (ideal[j] > population[non_dominated[i]].f[j] ){
+                ideal[j] = population[non_dominated[i]].f[j];
+            }
+            if (nadir[j] < population[non_dominated[i]].f[j] ) {
+                nadir[j] = population[non_dominated[i]].f[j];
+            }
+        }
 
+    }
+
+}
 
 void NSGAIII::associate_to_niches()
 {
@@ -476,7 +498,7 @@ void NSGAIII::associate_to_niches()
     // until last front
     int l = 0, S_size = 0;
     do {
-        S_size += n_fronts[++l];
+        S_size += n_fronts[l++];
     } while ( S_size < population_size );
     --l;
 
@@ -485,17 +507,16 @@ void NSGAIII::associate_to_niches()
         // printf("No niching is requiered.\n");
         return;
     }
+    S_size -= n_fronts[l];
 
 
-    K = population_size - S_size + n_fronts[l];
+    K = population_size - S_size;
     int last_front_size = n_fronts[l];
-    int incomplete_pop_size = S_size - n_fronts[l];
+    int incomplete_pop_size = S_size;
 
-    // printf("last_front_size == %d \n", last_front_size);
-    // printf("incomplete_pop_size == %d \n", incomplete_pop_size);
-    // printf("K = %d\n", K);
-
-
+    update_ideal_nadir(fronts, n_fronts[0]);
+ 
+ 
     float* denom = fvector(m);
 
     for (int i = 0; i < m; ++i) {
@@ -533,13 +554,13 @@ void NSGAIII::associate_to_niches()
     //float** M = fmatrix(last_front_size, n_ref_dirs);
     float d, d_min;
     for (int i = 0; i < parent_childre_size; ++i) {
-        d_min = 1.0 / 0.0;
+        d_min = -1;
         // find wj nearest to si
         for (int j = 0; j < n_ref_dirs; ++j) {
             // M[i][j] = norm_point_to_line(N[i], ref_dirs[j], m);
             //M[j][i] = M[i][j];
             d = norm_point_to_line(N[i], ref_dirs[j], m);
-            if (d_min > d) {
+            if ( d_min < 0 || d_min > d) {
                 d_min = d;
                 pi[i] = j;
                 distances_s_to_w[i] = d;
@@ -581,8 +602,12 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
     int* mask = ivector(n_ref_dirs);
     for (int i = 0; i < n_ref_dirs; ++i)
         mask[i] = i;
+    for (int i = 0; i < K+1; ++i)
+        pop_new[i] = -1;
+    
 
     sortperm(rho, mask, n_ref_dirs);
+
 
     while( k < K && J_min_size < n_ref_dirs){
         int rho_min = rho[ mask[J_min_size] ];

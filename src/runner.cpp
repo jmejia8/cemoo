@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     printf("Starting main...\n");
     srand(time(NULL));
 
-    int population_size = 100;
+    int population_size = 92;
     int m = 3;
     int dim = m + 10 - 1;
     float** bounds = fmatrix(dim, 2);
@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     Problem* p = new Problem(dim, m, bounds);
 
     NSGAIII* ga = new NSGAIII(p, population_size);
-    ga->max_generations = 500;
+    ga->max_generations = 550;
 
     ga->run();
 
