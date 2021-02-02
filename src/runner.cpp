@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     Problem* p = new Problem(dim, m, bounds);
 
     NSGAIII* ga = new NSGAIII(p, population_size);
-    ga->max_generations = 550;
+    ga->max_generations = 250;
 
     ga->run();
 

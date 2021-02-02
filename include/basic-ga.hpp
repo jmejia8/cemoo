@@ -35,6 +35,7 @@ class GA
 public:
 
 	int population_size = 0;
+	int generation = 0; // current generation
 	int max_generations = 100; // maximum number of generations
 	float p_m = 0.01; // mutation probability
 	float p_c = 1.0; // crossover probability

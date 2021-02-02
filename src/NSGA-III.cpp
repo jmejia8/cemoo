@@ -34,6 +34,7 @@ void NSGAIII::run()
 
     for (int gen = 0; gen < max_generations; ++gen) {
 
+        generation = gen;
         gen_parents();
         crossover();
         mutate();
@@ -587,6 +588,34 @@ void NSGAIII::associate_to_niches()
 }
 
 
+// armin if multiple chose one randomly
+int argmin_random(int* array, bool* used_dir, int len){
+    int i, i_min = 0;
+    int min = array[0];
+
+    int minimums[len];
+    int n_minimums = 0;
+    for (i = 0; i < len; ++i) {
+        if (used_dir[i])
+            continue;
+
+        if (n_minimums == 0 || min > array[i]) {
+            min = array[i];
+            i_min = i;
+            minimums[0] = i;
+            n_minimums = 1;
+        }else if (min == array[i]){
+            minimums[n_minimums++] = i;
+        }
+    }
+
+    i_min = randint(0, n_minimums);
+    printf("n_minimums = %d\n", n_minimums);
+
+    return minimums[i_min];
+
+}
+
 void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* last_front, int last_front_size)
 {
     if (K <= 0) {
@@ -606,62 +635,72 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
         pop_new[i] = -1;
     
 
-    sortperm(rho, mask, n_ref_dirs);
+    int I_j_hat[last_front_size];
+    int I_j_hat_size = 0;
+    float d_min = -1;
+    int i_d_min;
 
 
-    while( k < K && J_min_size < n_ref_dirs){
-        int rho_min = rho[ mask[J_min_size] ];
+    bool used_dir[n_ref_dirs];
+    for (i = 0; i < n_ref_dirs; ++i) {
+        used_dir[i] = false;
+    }
+
+
+    // while population is still incomplete
+    while( k < K){
+        // order rho values (order in mask)
+        j_hat = argmin_random(rho, used_dir, n_ref_dirs);
+        printf("j_hat = %d\n", j_hat);
+
+        printf("perate %d %d\n", k, K);
+
+        int rho_min = rho[ j_hat ];
         // those pho_j such that are equal to the current minimum
-        // while (mask[J_min_size] == rho_min) ++J_min_size;
-        // IMPORTANT, HERE YOU NEED ADD RANDOM CHOISES
-        j_hat = mask[J_min_size];// <-- randint(0, J_min_size);
-        ////////////
 
-        float d_min = -1;
-        bool I_j_hat_is_empty = true;
-        int i_d_min;
-        // for each item in I_j_hat
-        for (int i = 0; i < last_front_size; ++i) {
-            if ( pi[ last_front[i] ] != j_hat )
-                continue;
+        I_j_hat_size = 0;
+        for (i = 0; i < last_front_size; ++i) {
+            if (pi[ last_front[i] ] == j_hat) {
+                I_j_hat[ I_j_hat_size++ ] = last_front[i];
+            }
+        }
 
-            I_j_hat_is_empty = false;
-            // I_j_hat is not empty
-            if (rho_min == 0) {
-                if (d_min < 0 || d_min > distances_s_to_w[ last_front[i] ]){
-                    d_min = distances_s_to_w[ last_front[i] ];
-                    i_d_min = i; //last_front[i];
+        if (I_j_hat_size == 0) {
+            used_dir[j_hat] = true;
+            continue;
+        }
+        printf("pasale\n");
+
+        // I_j_hat is not empty
+        if (rho[j_hat] == 0) {
+           
+            i_d_min = I_j_hat[0];
+            d_min = distances_s_to_w[ i_d_min ];
+            // find hat with min distance
+            for (i = 1; i < I_j_hat_size; ++i) {
+                if (d_min > distances_s_to_w[ I_j_hat[i] ]){
+                    d_min = distances_s_to_w[ I_j_hat[i] ];
+                    i_d_min = I_j_hat[i]; //last_front[i];
                 }
-            }else{
-                /// HERE YOU NEED ADDING RANDIM CHOISES
-                i_d_min = i; //last_front[i];
+            }
+            
+
+            pop_new[ pop_new_size++ ] = i_d_min;
+        } else {
+            // add random choises
+            pop_new[pop_new_size++] = I_j_hat[0];
+        }
+
+        rho[j_hat] += 1;
+        ++k;
+        for (i = 0; i < last_front_size; ++i) {
+            if (pop_new[pop_new_size-1] == last_front[i]) {
                 break;
             }
-
         }
 
-
-        if (!I_j_hat_is_empty) {
-            bool is_repeated = false;
-            for (int i = 0; i < pop_new_size; ++i) {
-                if (pop_new[i] == last_front[i_d_min]) {
-                    is_repeated = true;
-                    break;
-                }
-            }
-
-            if (is_repeated) {
-                ++J_min_size;
-                continue;
-            }
-
-            pop_new[pop_new_size++] = last_front[i_d_min];
-            rho[pi[last_front[i_d_min]]] += 1;
-            ++k;
-        }else{
-            // here implement to ignore current j_hat
-            ++J_min_size;
-        }
+        deleteat(last_front, last_front_size, i);
+        --last_front_size;
 
     }
 
@@ -669,6 +708,13 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
         return;
     }
     K = pop_new_size;
+
+    printf("===========\n");
+    for ( i = 0; i < K; ++i) {
+        printf("%d ", pop_new[i]);
+    }
+
+    printf("\n");
 
     int n = population_size - K;
     Individual* P_tmp = (Individual*) malloc(K * sizeof(Individual));
