@@ -566,8 +566,10 @@ void NSGAIII::associate_to_niches()
                 distances_s_to_w[i] = d;
             }
         }
+        if (i < incomplete_pop_size ) {
+            rho[ pi[i] ] += 1;
+        }
 
-        rho[ pi[i] ] += 1;
     }
 
     niching(K, rho, pi, distances_s_to_w, &fronts[incomplete_pop_size], last_front_size );
@@ -625,14 +627,11 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
     }
 
     int k = 0;
-    int i = 0, j = 0, J_min_size = 0, j_hat;
-    int pop_new_size = 0;
+    int i = 0, j = 0, j_hat;
 
 
     int* pop_new = ivector(K+1);
-    int* mask = ivector(n_ref_dirs);
-    for (int i = 0; i < n_ref_dirs; ++i)
-        mask[i] = i;
+    int pop_new_size = 0;
     for (int i = 0; i < K+1; ++i)
         pop_new[i] = -1;
     
@@ -644,15 +643,13 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
 
 
     bool used_dir[n_ref_dirs];
-    for (i = 0; i < n_ref_dirs; ++i) {
+    for (i = 0; i < n_ref_dirs; ++i)
         used_dir[i] = false;
-    }
 
 
     // while population is still incomplete
     while( k < K){
 
-        // order rho values (order in mask)
         j_hat = argmin_random(rho, used_dir, n_ref_dirs);
 
         I_j_hat_size = 0;
@@ -669,7 +666,6 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
 
         // I_j_hat is not empty
         if (rho[j_hat] == 0) {
-           
             i_d_min = I_j_hat[0];
             d_min = distances_s_to_w[ i_d_min ];
             // find s with min distance
@@ -714,7 +710,6 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
         population[i] = P_tmp[i-n];
     }
 
-    free(mask);
     free(pop_new);
 
 

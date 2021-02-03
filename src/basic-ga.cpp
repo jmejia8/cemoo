@@ -74,7 +74,7 @@ void GA::eval_population()
 	float* f = fvector(problem->n_objectives);
 
 	for (int i = 0; i < population_size; ++i) {
-		objective_function(population[i].x, f, population_size, problem->n_objectives);
+		objective_function(population[i].x, f, problem->dimension, problem->n_objectives);
 		population[i].set_f(f, problem->n_objectives);
 		offsprings[i].set_f(f, problem->n_objectives);
 
@@ -92,7 +92,7 @@ void GA::eval_offsprings()
 	float* f = fvector(problem->n_objectives);
 
 	for (int i = 0; i < population_size; ++i) {
-		objective_function(offsprings[i].x, f, population_size, problem->n_objectives);
+		objective_function(offsprings[i].x, f, problem->dimension, problem->n_objectives);
 		offsprings[i].set_f(f, problem->n_objectives);
 
 	}

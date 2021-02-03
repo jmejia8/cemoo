@@ -70,6 +70,7 @@ public:
             
 			}else if (dimension == 3) {	
 				html_file << "type: 'scatter3d', mode: 'markers' ,\n";
+				html_file << "marker: { size: 3 },\n";
 			}else if (dimension > 3)
 				html_file << "type: 'scatter', mode: 'lines', \n";
 
