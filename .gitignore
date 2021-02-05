@@ -10,3 +10,4 @@ lib/*
 bin/*
 
 *.dat
+pf-approx/*.txt
