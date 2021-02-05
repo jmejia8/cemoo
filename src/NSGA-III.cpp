@@ -492,8 +492,15 @@ void NSGAIII::associate_to_niches()
     int m = problem->n_objectives;
     int K = 0;
 
-    if (ref_dirs == NULL)
+    if (ref_dirs == NULL){
+        if (m == 5) 
+            n_partitions = 8;
+        else if (m == 10) {
+            n_partitions = 5;
+        }
+        printf("n_partitions = %d\n", n_partitions);
         ref_dirs = das_dennis(n_partitions, m, &n_ref_dirs);
+    }
 
 
     // until last front
