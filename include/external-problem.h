@@ -8,7 +8,7 @@ void DTLZ2(float* x, float* F, int n, int m)
     int i,j, k = 10;
     float g = 0.0;
 
-    for (i = n-m; i < n; ++i)
+    for (i = m-1; i < n; ++i)
         g += pow(x[i] - 0.5, 2);
 
     for (i = 0; i < m; ++i) {

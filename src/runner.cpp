@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 
     int population_size = 92;
     int m = 3;
-    int dim = m + 10 - 1;
+    int dim = 10;
     float** bounds = fmatrix(dim, 2);
 
 
