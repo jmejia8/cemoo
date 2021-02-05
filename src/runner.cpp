@@ -81,8 +81,9 @@ int main(int argc, char *argv[]) {
     std::cin >> population_size;
     std::cin >> m;
     std::cin >> max_gen;
-    std::cin >> nrun;
     std::cin >> seed;
+
+    nrun = seed;
     
     dim = m + 10 - 1;
 
