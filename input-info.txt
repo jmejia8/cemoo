@@ -1,0 +1,5 @@
+population_size;
+m (numero de objetivos)
+max_gen;
+nrun;
+seed;
