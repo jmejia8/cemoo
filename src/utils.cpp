@@ -317,7 +317,7 @@ void sortperm(int *A, int* mask, int len)
 {
   if (len < 2) return;
  
-  float pivot = A[ mask[ len / 2]];
+  int pivot = A[ mask[ len / 2]];
  
   int i, j;
   for (i = 0, j = len - 1; ; i++, j--) {

@@ -43,6 +43,7 @@ void GA::set_population_size(int population_size_)
 	population_size = population_size_;
 	// initialize pointers to individuals (parent and offsprings in same array)
 	population = gen_population(2*population_size, true);
+	// optimal_solutions = gen_population(population_size, false);
 	offsprings = &population[population_size];
 
 }

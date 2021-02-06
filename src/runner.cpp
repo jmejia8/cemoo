@@ -57,12 +57,12 @@ int run(int population_size, int dim, int m, int max_gen, int nrun)
 
     printf("Running max gen %d\n", max_gen);
     ga->run();
-    // save_front(ga->population, ga->n_fronts[0], nrun+1);
+    save_front(ga->population, ga->n_fronts[0], nrun+1);
     printf("run complete\n");
 
 
-    Plot plt;
-    plt.scatter(ga->population, min( population_size, ga->n_fronts[0]));
+    //Plot plt;
+    //plt.scatter(ga->population, min( population_size, ga->n_fronts[0]));
     //plt.show();
 
 
@@ -85,17 +85,17 @@ int main(int argc, char *argv[]) {
      int population_size,  dim,  m,  max_gen,  nrun,  seed;
 
 
-    /**
     std::cin >> population_size;
     std::cin >> m;
     std::cin >> max_gen;
     std::cin >> seed;
-    **/
 
+     /***
     population_size = 92;
     m = 3;
     max_gen = 250;
     seed = time(NULL);
+    **/
 
     nrun = seed;
     

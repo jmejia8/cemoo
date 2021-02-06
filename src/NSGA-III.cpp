@@ -484,6 +484,11 @@ void NSGAIII::update_ideal_nadir(int* non_dominated, int len)
 
 }
 
+/*
+ *
+ * this function assume sorted population (non dominated sort)
+ *
+ * */
 void NSGAIII::associate_to_niches()
 {
 
@@ -571,6 +576,8 @@ void NSGAIII::associate_to_niches()
                 d_min = d;
                 pi[i] = j; // sol i belongs to nich j
                 distances_s_to_w[i] = d;
+                // population[i].distance_to_nich = d;
+                // population[i].nich = j;
             }
         }
         if (i < incomplete_pop_size ) {
