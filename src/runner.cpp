@@ -48,6 +48,13 @@ int run(int population_size, int dim, int m, int max_gen, int nrun)
     Problem* p = new Problem(dim, m, bounds);
     NSGAIII* ga = new NSGAIII(p, population_size);
     ga->max_generations = max_gen;
+
+    ga->p_c = 1.0;
+    ga->p_m = 1.0 / (float) dim;
+    ga->eta_c = 30;
+    ga->eta_m = 20;
+
+
     printf("Running max gen %d\n", max_gen);
     ga->run();
     // save_front(ga->population, ga->n_fronts[0], nrun+1);
@@ -88,7 +95,7 @@ int main(int argc, char *argv[]) {
     population_size = 92;
     m = 3;
     max_gen = 250;
-    seed = 1;
+    seed = time(NULL);
 
     nrun = seed;
     

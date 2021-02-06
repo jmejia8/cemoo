@@ -13,6 +13,9 @@ class Individual
 	public:
 		float* x = NULL;
 		float* f = NULL;
+		int rank;
+		int nich;
+		float distance_to_nich;
 
 		Individual ();
 

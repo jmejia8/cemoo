@@ -45,6 +45,7 @@ public:
 	float* utopian = NULL;
 
 	Individual* population = NULL;
+	Individual* optimal_solutions = NULL;
 	Individual* offsprings = NULL;
 	Problem* problem = NULL;
 

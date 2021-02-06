@@ -359,13 +359,13 @@ void NSGAIII::update_fronts(int pop_size)
 
 
     if (fronts == NULL)
-        fronts = ivector(pop_size);
+        fronts = ivector(2*pop_size);
     if (n_fronts == NULL)
-        n_fronts = ivector(pop_size);
+        n_fronts = ivector(2*pop_size);
 
     int i, j, ii, jj;
     char rel;
-    for (i = 0; i < pop_size; ++i) {
+    for (i = 0; i < 2*pop_size; ++i) {
         fronts[i] = 0;
         n_fronts[i] = 0;
     }
@@ -379,7 +379,6 @@ void NSGAIII::update_fronts(int pop_size)
 
     for (i = 0; i < pop_size; ++i) {
         n_dominated[i] = 0;
-        n_fronts[i] = 0;
         n_is_dominating[i] = 0;
 
     }
@@ -464,7 +463,7 @@ void NSGAIII::update_fronts(int pop_size)
 void NSGAIII::update_ideal_nadir(int* non_dominated, int len)
 {
     int m = problem->n_objectives;
-    // asume first solution is nadir and ideal
+    // assume first solution is nadir and ideal
     for (int j = 0; j < m; ++j) {
         ideal[j] = population[non_dominated[0]].f[j];
         nadir[j] = population[non_dominated[0]].f[j];
@@ -500,6 +499,7 @@ void NSGAIII::associate_to_niches()
         }
         printf("n_partitions = %d\n", n_partitions);
         ref_dirs = das_dennis(n_partitions, m, &n_ref_dirs);
+        printf("n_ref_dirs = %d\n", n_ref_dirs);
     }
 
 
@@ -510,9 +510,9 @@ void NSGAIII::associate_to_niches()
     } while ( S_size < population_size );
     --l;
 
-    // no niching is requiered
+    // no niching is required
     if (S_size == population_size) {
-        // printf("No niching is requiered.\n");
+        printf("No niching is required in generation %d\n", generation);
         return;
     }
 
@@ -539,11 +539,11 @@ void NSGAIII::associate_to_niches()
 
     // normalize by ideal point and intercepts
     // N = (F - ideal) / denom;
-    float** N = fmatrix(parent_childre_size, m);
+    float** N = fmatrix(S_size, m);
 
-    for (int i = 0; i < parent_childre_size; ++i) {
+    for (int i = 0; i < S_size; ++i) {
         for (int j = 0; j < m; ++j) {
-            N[i][j] = (population[i].f[j] - ideal[j]) / denom[j];
+            N[i][j] = (population[fronts[i]].f[j] - ideal[j]) / denom[j];
         }
     }
 
@@ -569,7 +569,7 @@ void NSGAIII::associate_to_niches()
             d = norm_point_to_line(N[i], ref_dirs[j], m);
             if ( d_min < 0 || d_min > d) {
                 d_min = d;
-                pi[i] = j;
+                pi[i] = j; // sol i belongs to nich j
                 distances_s_to_w[i] = d;
             }
         }
@@ -684,7 +684,6 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
             }
             pop_new[ pop_new_size++ ] = i_d_min;
         } else {
-            // add random choises
             i_d_min = randint(0, I_j_hat_size);
             pop_new[pop_new_size++] = I_j_hat[i_d_min];
         }
