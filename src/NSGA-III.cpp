@@ -44,7 +44,7 @@ void NSGAIII::run()
     }
 
     std::cout << "time in second: " << ttime() - start << std::endl;
-    std::cout << "no dominated: " << n_fronts[0] << std::endl;
+    std::cout << "no dominated: " << min(population_size, n_fronts[0]) << std::endl;
 
 
 
@@ -80,7 +80,7 @@ void NSGAIII::sbx()
     float rnd,par1,par2,chld1,chld2,betaq,beta,alpha;
     float y1,y2,yu,yl,expp;
     int popsize = population_size;
-    int nvar = problem->n_objectives;
+    int nvar = problem->dimension;
     float pcross = p_c;
     float** lim_r = problem->bounds;
 
@@ -140,7 +140,7 @@ void NSGAIII::sbx()
                         }
 
                         /*Find alpha*/
-                        expp = di + 1.0;
+                        expp = eta_c + 1.0;
 
                         beta = 1.0/beta;
 
@@ -157,14 +157,14 @@ void NSGAIII::sbx()
                         if (rnd <= 1.0/alpha)
                         {
                             alpha = alpha*rnd;
-                            expp = 1.0/(di+1.0);
+                            expp = 1.0/(eta_c+1.0);
                             betaq = pow(alpha,expp);
                         }
                         else
                         {
                             alpha = alpha*rnd;
                             alpha = 1.0/(2.0-alpha);
-                            expp = 1.0/(di+1.0);
+                            expp = 1.0/(eta_c+1.0);
                             if (alpha < 0.0) 
                             {
                                 printf("ERRRORRR \n");
@@ -238,7 +238,7 @@ void NSGAIII::realmutate()
     float y,yl,yu,val,xy;
 
     int popsize = population_size;
-    int nvar = problem->n_objectives;
+    int nvar = problem->dimension;
     float** lim_r = problem->bounds;
     float pmut_r = p_m;
 
@@ -268,18 +268,18 @@ void NSGAIII::realmutate()
 
                     rnd = rand01(); 
 
-                    indi = 1.0/(dim +1.0);
+                    indi = 1.0/(eta_c +1.0);
 
                     if(rnd <= 0.5)
                     {
                         xy = 1.0-delta;
-                        val = 2*rnd+(1-2*rnd)*(pow(xy,(dim+1)));
+                        val = 2*rnd+(1-2*rnd)*(pow(xy,(eta_c+1)));
                         deltaq =  pow(val,indi) - 1.0;
                     }
                     else
                     {
                         xy = 1.0-delta;
-                        val = 2.0*(1.0-rnd)+2.0*(rnd-0.5)*(pow(xy,(dim+1)));
+                        val = 2.0*(1.0-rnd)+2.0*(rnd-0.5)*(pow(xy,(eta_c+1)));
                         deltaq = 1.0 - (pow(val,indi));
                     }
 
@@ -616,7 +616,7 @@ int argmin_random(int* array, bool* used_dir, int len){
             minimums[n_minimums++] = i;
         }
     }
-
+    // seems all refrence points were deleted
     if (n_minimums == 0) {
         error("Fail associate niches.");
     }
