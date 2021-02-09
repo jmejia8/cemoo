@@ -497,16 +497,17 @@ void NSGAIII::associate_to_niches()
     int K = 0;
 
     if (ref_dirs == NULL){
-        if(m == 3)
+        if(m == 3) {
             ref_dirs = das_dennis(n_partitions, m, &n_ref_dirs);
+        }
         else if (m == 5) {
             n_partitions = 6;
             ref_dirs = das_dennis(n_partitions, m, &n_ref_dirs);
         } else if (m == 10) {
-            int n_inside = 3, n_boudary = 2;
+            int n_boudary = 3, n_inside = 2;
             ref_dirs = gen_ref_points(n_inside, n_boudary, m, &n_ref_dirs);
         }else if ( m == 15){
-            int n_inside = 2, n_boudary = 1;
+            int n_boudary = 2, n_inside = 1;
             ref_dirs = gen_ref_points(n_inside, n_boudary, m, &n_ref_dirs);
         }
         printf("n_partitions = %d\n", n_partitions);

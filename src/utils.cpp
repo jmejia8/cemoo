@@ -312,6 +312,36 @@ double** das_dennis(int n_partitions, int n_dim, int* len)
 
 
 
+double** gen_ref_points(int n_inside, int n_boudary, int n_dim, int* len)
+{
+    int len_inside, len_boudary;
+    double** refpoints_boudary = das_dennis(n_boudary, n_dim, &len_boudary);
+
+    len[0] = len_boudary;
+    if (n_inside <= 0)
+        return refpoints_boudary;
+
+    double** refpoints_inside = das_dennis(n_inside, n_dim, &len_inside);
+
+    double center = 1.0/n_dim;
+    for (int i = 0; i < len_inside; ++i) {
+        for (int j = 0; j < n_dim; ++j)
+            refpoints_inside[i][j] = (center + refpoints_inside[i][j])/2;
+    }
+
+    len[0] += len_inside;
+    double** refpoints = (double**) malloc( sizeof(double*) * len[0] ) ;
+
+    for (int i = 0; i < len_boudary; ++i) 
+        refpoints[i] = refpoints_boudary[i];
+    
+    for (int i = 0; i < len_inside; ++i) 
+        refpoints[len_boudary + i] = refpoints_inside[i];
+
+    return refpoints;
+
+}
+
 
 void sortperm(int *A, int* mask, int len)
 {

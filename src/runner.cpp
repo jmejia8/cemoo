@@ -86,17 +86,17 @@ int main(int argc, char *argv[]) {
      int population_size,  dim,  m,  max_gen,  nrun,  seed;
 
 
-     /***
     std::cin >> population_size;
     std::cin >> m;
     std::cin >> max_gen;
     std::cin >> seed;
 
-    **/
+    /**
     population_size = 92;
     m = 3;
     max_gen = 250;
-    seed = 1;//time(NULL);
+    seed = time(NULL);
+    ***/
 
     nrun = seed;
     
