@@ -711,9 +711,10 @@ void NSGAIII::niching(int K, int* rho, int* pi, double* distances_s_to_w, int* l
 
 
     int n = population_size - K;
-    Individual* P_tmp = (Individual*) malloc(K * sizeof(Individual));
+    Individual* P_tmp = gen_population(population_size, true);
     for (int i = 0; i < K; ++i) {
-        P_tmp[i] = population[pop_new[i]];
+        P_tmp[i].set_x(population[pop_new[i]].x, problem->dimension);
+        P_tmp[i].set_f(population[pop_new[i]].f, problem->n_objectives);
     }
 
     for (int i = n; i < population_size; ++i) {
