@@ -81,6 +81,7 @@ void das_dennis_recursion(double** ref_dirs, double* ref_dir,int n_partitions,in
 double** das_dennis(int n_partitions, int n_dim, int* len);
 
 
+double** gen_ref_points(int n_inside, int n_boudary, int n_dim, int* len);
 
 void sortperm(int *A, int* mask, int len);
 
