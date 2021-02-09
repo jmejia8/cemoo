@@ -26,12 +26,6 @@ void DTLZ2(double* x, double* F, int n, int m)
     
 }
 
-void tmp(double* x, double* F, int n, int m)
-{
-    
-}
-
-
 
 void objective_function(double* x, double* F, int n, int m){
     DTLZ2(x, F, n, m);
