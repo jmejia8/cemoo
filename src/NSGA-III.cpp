@@ -26,7 +26,7 @@ void NSGAIII::run()
 {
     std::ofstream outputdat;
 
-    float start = ttime();
+    double start = ttime();
 
 
     initialize_with_randoms();
@@ -77,12 +77,12 @@ void NSGAIII::crossover(){
 void NSGAIII::sbx()
 {
     int i,j,y,n;
-    float rnd,par1,par2,chld1,chld2,betaq,beta,alpha;
-    float y1,y2,yu,yl,expp;
+    double rnd,par1,par2,chld1,chld2,betaq,beta,alpha;
+    double y1,y2,yu,yl,expp;
     int popsize = population_size;
     int nvar = problem->dimension;
-    float pcross = p_c;
-    float** lim_r = problem->bounds;
+    double pcross = p_c;
+    double** lim_r = problem->bounds;
 
     Individual* new_pop_ptr = offsprings;
 
@@ -234,13 +234,13 @@ void NSGAIII::mutate()
 void NSGAIII::realmutate()
 {
     int i,j;
-    float rnd,delta,indi,deltaq;
-    float y,yl,yu,val,xy;
+    double rnd,delta,indi,deltaq;
+    double y,yl,yu,val,xy;
 
     int popsize = population_size;
     int nvar = problem->dimension;
-    float** lim_r = problem->bounds;
-    float pmut_r = p_m;
+    double** lim_r = problem->bounds;
+    double pmut_r = p_m;
 
     Individual* new_pop_ptr = offsprings;
 
@@ -529,7 +529,7 @@ void NSGAIII::associate_to_niches()
     update_ideal_nadir(fronts, n_fronts[0]);
  
  
-    float* denom = fvector(m);
+    double* denom = fvector(m);
 
     for (int i = 0; i < m; ++i) {
         denom[i] = nadir[i] - ideal[i];
@@ -539,12 +539,12 @@ void NSGAIII::associate_to_niches()
 
 
     int parent_childre_size = 2*population_size;
-    float* distances_s_to_w = fvector(parent_childre_size);
+    double* distances_s_to_w = fvector(parent_childre_size);
 
 
     // normalize by ideal point and intercepts
     // N = (F - ideal) / denom;
-    float** N = fmatrix(S_size, m);
+    double** N = fmatrix(S_size, m);
 
     for (int i = 0; i < S_size; ++i) {
         for (int j = 0; j < m; ++j) {
@@ -562,7 +562,7 @@ void NSGAIII::associate_to_niches()
     for (int i = 0; i < n_ref_dirs; ++i)
         rho[i] = 0;
 
-    float d, d_min;
+    double d, d_min;
     for (int i = 0; i < S_size; ++i) {
         d_min = -1;
         // find wj nearest to si
@@ -630,7 +630,7 @@ int argmin_random(int* array, bool* used_dir, int len){
 
 }
 
-void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* last_front, int last_front_size)
+void NSGAIII::niching(int K, int* rho, int* pi, double* distances_s_to_w, int* last_front, int last_front_size)
 {
     if (K <= 0) {
         return;
@@ -648,7 +648,7 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
 
     int I_j_hat[last_front_size];
     int I_j_hat_size = 0;
-    float d_min = -1;
+    double d_min = -1;
     int i_d_min;
 
 

@@ -23,7 +23,7 @@ end
 function get_unary_metric_values(nrun, pf5, pf10)
 
     fname_tipo4 = "pf-approx/dtlz2-5-run$(nrun).txt"
-    fname_tipo5 = "pf-approx/dtlz2-5-run$(nrun).txt"
+    fname_tipo5 = "pf-approx/dtlz2-10-run$(nrun).txt"
     tipo4 = get_front(fname_tipo4)
     tipo5 = get_front(fname_tipo5)
 
@@ -51,7 +51,7 @@ end
 
 function main()
     # cambiar a 10
-    fname_true = "pf-true/dtlz2-5.txt"
+    fname_true = "pf-true/dtlz2-10.txt"
     pf10 = readdlm(fname_true)
 
 
@@ -61,7 +61,7 @@ function main()
 
 
     unary_res = []
-    for nrun = 2:32
+    for nrun = 2:22
         res = get_unary_metric_values(nrun, pf5, pf10)
         push!(unary_res, res')
     end

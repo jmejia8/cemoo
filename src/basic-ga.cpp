@@ -54,8 +54,8 @@ void GA::initialize_with_randoms()
 		error("Instantiate with a problem.");
 
 	// initialize with random values
-	float* pop = fvector(population_size * problem->dimension); 
-	float* x;
+	double* pop = fvector(population_size * problem->dimension); 
+	double* x;
 	fill_population(pop, population_size, problem->dimension, problem->bounds);
 	for (int i = 0; i < population_size; ++i) {
 		x = &pop[i*problem->dimension];
@@ -72,7 +72,7 @@ void GA::eval_population()
 	if (problem == NULL || population == NULL)
 		error("Population seems empty.");
 
-	float* f = fvector(problem->n_objectives);
+	double* f = fvector(problem->n_objectives);
 
 	for (int i = 0; i < population_size; ++i) {
 		objective_function(population[i].x, f, problem->dimension, problem->n_objectives);
@@ -90,7 +90,7 @@ void GA::eval_offsprings()
 	if (problem == NULL || population == NULL)
 		error("Population seems empty.");
 
-	float* f = fvector(problem->n_objectives);
+	double* f = fvector(problem->n_objectives);
 
 	for (int i = 0; i < population_size; ++i) {
 		objective_function(offsprings[i].x, f, problem->dimension, problem->n_objectives);

@@ -36,7 +36,7 @@ void save_front(Individual* P, int pop_size, int nrun)
 int run(int population_size, int dim, int m, int max_gen, int nrun)
 {
 
-    float** bounds = fmatrix(dim, 2);
+    double** bounds = fmatrix(dim, 2);
 
 
     for (int i = 0; i < dim; ++i) {
@@ -50,7 +50,7 @@ int run(int population_size, int dim, int m, int max_gen, int nrun)
     ga->max_generations = max_gen;
 
     ga->p_c = 1.0;
-    ga->p_m = 1.0 / (float) dim;
+    ga->p_m = 1.0 / (double) dim;
     ga->eta_c = 30;
     ga->eta_m = 20;
 

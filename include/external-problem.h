@@ -3,10 +3,10 @@
 
 #include <math.h>
 
-void DTLZ2(float* x, float* F, int n, int m)
+void DTLZ2(double* x, double* F, int n, int m)
 {
     int i,j, k = 10;
-    float g = 0.0;
+    double g = 0.0;
 
     for (i = m-1; i < n; ++i)
         g += pow(x[i] - 0.5, 2);
@@ -26,14 +26,14 @@ void DTLZ2(float* x, float* F, int n, int m)
     
 }
 
-void tmp(float* x, float* F, int n, int m)
+void tmp(double* x, double* F, int n, int m)
 {
     
 }
 
 
 
-void objective_function(float* x, float* F, int n, int m){
+void objective_function(double* x, double* F, int n, int m){
     DTLZ2(x, F, n, m);
 }
 

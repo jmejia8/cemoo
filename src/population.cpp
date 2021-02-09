@@ -23,14 +23,14 @@ Individual::~Individual ()
 }
 
 
-void Individual::set_x(float* x_new, int len)
+void Individual::set_x(double* x_new, int len)
 {
 	dimension = len;
 	x = fvector(dimension);
 	set_x(x_new);
 }
 
-void Individual::set_x(float* x_new)
+void Individual::set_x(double* x_new)
 {
 	for (int i = 0; i < dimension; ++i) {
 		x[i] = x_new[i];
@@ -38,7 +38,7 @@ void Individual::set_x(float* x_new)
 }
 
 
-void Individual::set_f(float* f_new)
+void Individual::set_f(double* f_new)
 {
 	for (int i = 0; i < n_objectives; ++i) {
 		f[i] = f_new[i];
@@ -46,7 +46,7 @@ void Individual::set_f(float* f_new)
 }
 
 
-void Individual::set_f(float* f_new, int len)
+void Individual::set_f(double* f_new, int len)
 {
 	n_objectives = len;
 	f = fvector(n_objectives);

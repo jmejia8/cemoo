@@ -1,8 +1,8 @@
 #ifndef LINEAR_ALGEBRA_H
 #define LINEAR_ALGEBRA_H
-float dot(float* , float* , int );
-float norm(float* , int );
+double dot(double* , double* , int );
+double norm(double* , int );
 
-float norm_point_to_line(float* s, float* w, int len);
+double norm_point_to_line(double* s, double* w, int len);
 
 #endif

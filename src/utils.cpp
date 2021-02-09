@@ -12,10 +12,10 @@ void error(const char* message) {
 
 
 /*
- * creates a vector of floats with size len
+ * creates a vector of doubles with size len
  * */
-float* fvector(int len) {
-    float* v = (float*) malloc(len * sizeof(float));
+double* fvector(int len) {
+    double* v = (double*) malloc(len * sizeof(double));
     if (!v) {
         error("Error allocating memory\n");
     }
@@ -52,8 +52,8 @@ int** imatrix(int rows, int cols) {
 
 
 
-float** fmatrix(int rows, int cols) {
-    float** matrix = (float**) malloc(rows * sizeof(int*));
+double** fmatrix(int rows, int cols) {
+    double** matrix = (double**) malloc(rows * sizeof(int*));
     if (!matrix) {
         error("Error allocating memory\n");
     }
@@ -70,7 +70,7 @@ float** fmatrix(int rows, int cols) {
 /*
  * get column col via vec in a matrix 
  * */
-void get_col(float* matrix, float* vec, int* mask, int rows, int cols, int col){
+void get_col(double* matrix, double* vec, int* mask, int rows, int cols, int col){
     if (!vec)
         error("Error getting column since vector is empty");
 
@@ -83,7 +83,7 @@ void get_col(float* matrix, float* vec, int* mask, int rows, int cols, int col){
     
 }
 
-void print_vector(float* v, int len)
+void print_vector(double* v, int len)
 {
     int i;
 
@@ -99,7 +99,7 @@ void print_vector(float* v, int len)
 /*
  * print matrix with size rows x cols
  * */
-void print_matrix(float* m, int rows, int cols)
+void print_matrix(double* m, int rows, int cols)
 {
     int i,j;
 
@@ -146,9 +146,9 @@ void move_to_front(int* array, int j, int n)
 }
 
 
-int argmin(float* array, int len){
+int argmin(double* array, int len){
     int i, i_min = 0;
-    float min = array[0];
+    double min = array[0];
 
     for (i = 1; i < len; ++i) {
         if (min > array[i]) {
@@ -161,16 +161,16 @@ int argmin(float* array, int len){
 
 }
 
-float minimum(float* array, int len)
+double minimum(double* array, int len)
 {
     return array[ argmin(array, len) ];
 
 }
 
-void fill_ideal(float* ideal, float* fvalues, int N, int m)
+void fill_ideal(double* ideal, double* fvalues, int N, int m)
 {
     int i, j;
-    float f; // auxiliar function
+    double f; // auxiliar function
     for (j = 0; j < m; ++j) {
 
         // assume first vector in fvalues is the ideal
@@ -183,8 +183,8 @@ void fill_ideal(float* ideal, float* fvalues, int N, int m)
 
 }
 
-float ttime(){
-    return ((float) clock() ) / CLOCKS_PER_SEC;
+double ttime(){
+    return ((double) clock() ) / CLOCKS_PER_SEC;
 }
 
 
@@ -195,7 +195,7 @@ float ttime(){
  * 'd' a dominates b
  * 'D' b dominates a
  * */
-char compare(float* a, float* b, int k)
+char compare(double* a, double* b, int k)
 {
     int i = 0, j;
     while (i < k && a[i] == b[i]) ++i;
@@ -220,7 +220,7 @@ char compare(float* a, float* b, int k)
 }
 
 
-void update_ideal(float* ideal, float* f, int len)
+void update_ideal(double* ideal, double* f, int len)
 {
     for (int i = 0; i < len; ++i) {
         if (ideal[i] > f[i])
@@ -229,7 +229,7 @@ void update_ideal(float* ideal, float* f, int len)
 }
 
 
-void update_nadir(float* nadir, float* f, int len)
+void update_nadir(double* nadir, double* f, int len)
 {
     for (int i = 0; i < len; ++i) {
         if (nadir[i] < f[i])
@@ -252,10 +252,10 @@ int nCr(int n, int r)
 }
 
 
-void das_dennis_recursion(float** ref_dirs, float* ref_dir,int n_partitions,int beta,int depth, int n_dim, int* len)
+void das_dennis_recursion(double** ref_dirs, double* ref_dir,int n_partitions,int beta,int depth, int n_dim, int* len)
 {
     if (depth == n_dim - 1) {
-        ref_dir[depth] = (float) beta / (1.0 * n_partitions);
+        ref_dir[depth] = (double) beta / (1.0 * n_partitions);
         for (int i = 0; i < n_dim; ++i){
             ref_dirs[*len][i] = ref_dir[i];
         }
@@ -264,10 +264,10 @@ void das_dennis_recursion(float** ref_dirs, float* ref_dir,int n_partitions,int 
         return;
     }
 
-    float* ref_dir_copy = fvector(n_dim);
+    double* ref_dir_copy = fvector(n_dim);
 
     for (int i = 0; i < beta + 1; ++i) {
-        ref_dir[depth] = 1.0 * (float) i / (1.0 * n_partitions);
+        ref_dir[depth] = 1.0 * (double) i / (1.0 * n_partitions);
 
         // copy ref_dir
         for (int j = 0; j < n_dim; ++j) ref_dir_copy[j] = ref_dir[j];
@@ -280,24 +280,24 @@ void das_dennis_recursion(float** ref_dirs, float* ref_dir,int n_partitions,int 
 
 
 
-float** das_dennis(int n_partitions, int n_dim, int* len)
+double** das_dennis(int n_partitions, int n_dim, int* len)
 {
 
     int n = nCr(n_dim + n_partitions-1, n_partitions);
     *len = 0;
 
-    float** ref_dirs = fmatrix(n, n_dim);
+    double** ref_dirs = fmatrix(n, n_dim);
 
     if (n_partitions == 0) {
         for (int i = 0; i < n_dim; ++i) {
-            ref_dirs[0][i] = 1.0 / (float) n_dim;
+            ref_dirs[0][i] = 1.0 / (double) n_dim;
         }
         *len = 1;
         return ref_dirs;
     }
 
     
-    float* ref_dir = fvector(n_dim);
+    double* ref_dir = fvector(n_dim);
     das_dennis_recursion(ref_dirs, ref_dir, n_partitions, n_partitions, 0, n_dim, len);
 
     //*len = n;

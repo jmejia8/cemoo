@@ -11,10 +11,10 @@ class Problem
 {
 	public:
 		int dimension = 0, n_objectives = 0;
-		float** bounds;
+		double** bounds;
 
 		Problem ();
-		Problem (int dimension_, int n_objectives_, float* bounds_[]){
+		Problem (int dimension_, int n_objectives_, double* bounds_[]){
 			dimension = dimension_;
 			n_objectives = n_objectives_;
 			bounds = fmatrix(dimension, 2);
@@ -37,12 +37,12 @@ public:
 	int population_size = 0;
 	int generation = 0; // current generation
 	int max_generations = 100; // maximum number of generations
-	float p_m = 0.01; // mutation probability
-	float p_c = 1.0; // crossover probability
+	double p_m = 0.01; // mutation probability
+	double p_c = 1.0; // crossover probability
 
-	float* ideal = NULL;
-	float* nadir = NULL;
-	float* utopian = NULL;
+	double* ideal = NULL;
+	double* nadir = NULL;
+	double* utopian = NULL;
 
 	Individual* population = NULL;
 	Individual* optimal_solutions = NULL;

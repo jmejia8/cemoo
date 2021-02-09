@@ -9,10 +9,10 @@ class NSGAIII: public GA {
         int* parent;
 
 	public:
-		float eta_c = 30.0;
-		float eta_m = 20.0;
+		double eta_c = 30.0;
+		double eta_m = 20.0;
         int* fronts = NULL, *n_fronts = NULL;
-        float** ref_dirs = NULL;
+        double** ref_dirs = NULL;
         int n_ref_dirs = 0;
         int n_partitions = 12;
 
@@ -33,7 +33,7 @@ class NSGAIII: public GA {
 
 		void associate_to_niches();
 		void normalize();
-        void niching(int K, int* rho, int* pi, float* distances_s_to_w, int* last_front, int last_front_size);
+        void niching(int K, int* rho, int* pi, double* distances_s_to_w, int* last_front, int last_front_size);
         void update_ideal_nadir(int* non_dominated, int len);
 
 };

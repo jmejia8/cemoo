@@ -11,11 +11,11 @@ class Individual
 		int n_objectives;
 
 	public:
-		float* x = NULL;
-		float* f = NULL;
+		double* x = NULL;
+		double* f = NULL;
 		int rank;
 		int nich;
-		float distance_to_nich;
+		double distance_to_nich;
 
 		Individual ();
 
@@ -23,10 +23,10 @@ class Individual
 
 		virtual ~Individual ();
 
-		void set_x(float* x_new, int len);
-		void set_x(float* x_new);
-		void set_f(float* f_new);
-		void set_f(float* f_new, int len);
+		void set_x(double* x_new, int len);
+		void set_x(double* x_new);
+		void set_f(double* f_new);
+		void set_f(double* f_new, int len);
 		int get_dim();
 		int get_nfs();
 

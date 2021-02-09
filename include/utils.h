@@ -15,9 +15,9 @@
 void error(const char* ) ;
 
 /*
- * creates a vector of floats with size len
+ * creates a vector of doubles with size len
  * */
-float* fvector(int ) ;
+double* fvector(int ) ;
 
 /*
  * creates a vector of integers with size len
@@ -28,20 +28,20 @@ int* ivector(int ) ;
 int** imatrix(int , int ) ;
 
 
-float** fmatrix(int rows, int cols) ;
+double** fmatrix(int rows, int cols) ;
 /*
  * get column col via vec in a matrix 
  * */
-void get_col(float* matrix, float* vec, int* mask, int rows, int cols, int col);
+void get_col(double* matrix, double* vec, int* mask, int rows, int cols, int col);
 
-void print_vector(float* v, int len);
+void print_vector(double* v, int len);
 
 
 
 /*
  * print matrix with size rows x cols
  * */
-void print_matrix(float* m, int rows, int cols);
+void print_matrix(double* m, int rows, int cols);
 
 /*
  * delete item array[i] from array with size len.
@@ -56,29 +56,29 @@ void deleteat(int* array, int len, int i) ;
 void move_to_front(int* array, int j, int n);
 
 
-int argmin(float* array, int len);
+int argmin(double* array, int len);
 
-float minimum(float* array, int len);
+double minimum(double* array, int len);
 
-void fill_ideal(float* ideal, float* fvalues, int N, int m);
+void fill_ideal(double* ideal, double* fvalues, int N, int m);
 
-float ttime();
-
-
-
-char compare(float* a, float* b, int k);
-
-float norm_point_to_line(float* s, float* w, int len);
+double ttime();
 
 
-void update_nadir(float* nadir, float* f, int len);
-void update_ideal(float* ideal, float* f, int len);
+
+char compare(double* a, double* b, int k);
+
+double norm_point_to_line(double* s, double* w, int len);
+
+
+void update_nadir(double* nadir, double* f, int len);
+void update_ideal(double* ideal, double* f, int len);
 
 
 int factorial(int m, int n);
 int nCr(int n, int r);
-void das_dennis_recursion(float** ref_dirs, float* ref_dir,int n_partitions,int beta,int depth, int n_dim, int* len);
-float** das_dennis(int n_partitions, int n_dim, int* len);
+void das_dennis_recursion(double** ref_dirs, double* ref_dir,int n_partitions,int beta,int depth, int n_dim, int* len);
+double** das_dennis(int n_partitions, int n_dim, int* len);
 
 
 
