@@ -548,7 +548,7 @@ void NSGAIII::associate_to_niches()
 
     for (int i = 0; i < S_size; ++i) {
         for (int j = 0; j < m; ++j) {
-            N[i][j] = (population[fronts[i]].f[j] - ideal[j]) / denom[j];
+            N[i][j] = (population[i].f[j] - ideal[j]) / denom[j];
         }
     }
 
@@ -562,22 +562,18 @@ void NSGAIII::associate_to_niches()
     for (int i = 0; i < n_ref_dirs; ++i)
         rho[i] = 0;
 
-    // M[i,j] = d'(s,w)
-    //float** M = fmatrix(last_front_size, n_ref_dirs);
     float d, d_min;
     for (int i = 0; i < S_size; ++i) {
         d_min = -1;
         // find wj nearest to si
         for (int j = 0; j < n_ref_dirs; ++j) {
-            // M[i][j] = norm_point_to_line(N[i], ref_dirs[j], m);
-            //M[j][i] = M[i][j];
             d = norm_point_to_line(N[i], ref_dirs[j], m);
-            if ( d_min < 0 || d_min > d) {
+            if ( d_min < 0.0 || d_min > d) {
                 d_min = d;
                 pi[i] = j; // sol i belongs to nich j
                 distances_s_to_w[i] = d;
-                // population[i].distance_to_nich = d;
-                // population[i].nich = j;
+                population[i].distance_to_nich = d;
+                population[i].nich = j;
             }
         }
         if (i < incomplete_pop_size ) {
@@ -644,9 +640,9 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
     int i = 0, j = 0, j_hat;
 
 
-    int* pop_new = ivector(K+1);
+    int* pop_new = ivector(K);
     int pop_new_size = 0;
-    for (int i = 0; i < K+1; ++i)
+    for (int i = 0; i < K; ++i)
         pop_new[i] = -1;
     
 
@@ -668,7 +664,7 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
 
         I_j_hat_size = 0;
         for (i = 0; i < last_front_size; ++i) {
-            if (pi[ last_front[i] ] == j_hat) {
+            if (population[ last_front[i] ].nich == j_hat) {
                 I_j_hat[ I_j_hat_size++ ] = last_front[i];
             }
         }
@@ -681,12 +677,12 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
         // I_j_hat is not empty
         if (rho[j_hat] == 0) {
             i_d_min = I_j_hat[0];
-            d_min = distances_s_to_w[ i_d_min ];
+            d_min = population[i_d_min].distance_to_nich;
             // find s with min distance
             for (i = 1; i < I_j_hat_size; ++i) {
-                if (d_min > distances_s_to_w[ I_j_hat[i] ]){
-                    d_min = distances_s_to_w[ I_j_hat[i] ];
-                    i_d_min = I_j_hat[i]; //last_front[i];
+                if (d_min > population[I_j_hat[i]].distance_to_nich){
+                    d_min = population[I_j_hat[i]].distance_to_nich;
+                    i_d_min = I_j_hat[i];
                 }
             }
             pop_new[ pop_new_size++ ] = i_d_min;
@@ -709,9 +705,10 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
     }
 
     if (pop_new_size == 0) {
+        error("Fail niching");
         return;
     }
-    K = pop_new_size;
+
 
     int n = population_size - K;
     Individual* P_tmp = (Individual*) malloc(K * sizeof(Individual));
@@ -720,7 +717,8 @@ void NSGAIII::niching(int K, int* rho, int* pi, float* distances_s_to_w, int* la
     }
 
     for (int i = n; i < population_size; ++i) {
-        population[i] = P_tmp[i-n];
+        population[i].set_x(P_tmp[i-n].x);
+        population[i].set_f(P_tmp[i-n].f);
     }
 
     free(pop_new);
