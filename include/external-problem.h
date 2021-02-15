@@ -63,6 +63,7 @@ void ZCAT20(double* x, double* F, int n, int M)
         }
         alpha[M-1] *= s / (2.0 * ( (double) M - 1) * pow(0.5, 5)) + 0.5 ;
     }
+    // alpha seems ok
 
     double g[n - m], theta;
     for (j = 0; j < n - m; ++j) {
@@ -80,8 +81,9 @@ void ZCAT20(double* x, double* F, int n, int M)
         for (j = m; j < n; ++j) {
             if ((j - m - i) % M != 0) 
                 continue;
-            wj = x[j]; //y[j] - g[j - m];
+            // wj = x[j];
             // differs from paper (supplementary material)
+            wj = y[j] - g[j - m];
             maxj = fabs(wj) > maxj ? fabs(wj) : maxj;
         }
 
