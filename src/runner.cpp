@@ -40,8 +40,8 @@ int run(int population_size, int dim, int m, int max_gen, int nrun)
 
 
     for (int i = 0; i < dim; ++i) {
-        bounds[i][0] = 0.0;
-        bounds[i][1] = 1.0;
+        bounds[i][0] = - ( (double) i+1) / 2.0;
+        bounds[i][1] = ( (double) i+1) / 2.0;
     }
 
 
@@ -76,27 +76,20 @@ int main(int argc, char *argv[]) {
     printf("Starting main...\n");
     // srand(time(NULL));
 
-    /***
-    int max_generations[2] = {600, 1000};
-    int pops_size[2] = {212, 276};
-    int ms[2] = {5, 10};
-    int nruns = 2;
-    ***/
-
-     int population_size,  dim,  m,  max_gen,  nrun,  seed;
+    int population_size,  dim,  m,  max_gen,  nrun,  seed;
 
 
+    /**
     std::cin >> population_size;
     std::cin >> m;
     std::cin >> max_gen;
     std::cin >> seed;
+    ***/
 
-    /**
     population_size = 92;
     m = 3;
     max_gen = 250;
     seed = time(NULL);
-    ***/
 
     nrun = seed;
     

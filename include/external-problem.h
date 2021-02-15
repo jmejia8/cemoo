@@ -29,11 +29,16 @@ void DTLZ2(double* x, double* F, int n, int m)
 
 void ZCAT20(double* x, double* F, int n, int M)
 {
-    int level = 2, i;
+    int level = 2, i, j;
     bool bias = false;
 
     double alpha[M];
     int m;
+
+    double y[n], *y_II = &y[m];
+    for (i = 0; i < n; ++i) {
+        y[i] = (x[i] - ( ( (double) i + 1) / 2.0 )) / ( (double) i + 1);
+    }
 
     if ( (0.1 <= y[0] && y[0] <= 0.4 ) || (0.6 <= y[0] && y[0] <= 0.9 ) ) {
         m = 1;
@@ -54,36 +59,37 @@ void ZCAT20(double* x, double* F, int n, int M)
     }else{
         double s = 0.0;
         for (int i = 0; i < M-1; ++i) {
-            s += (pow(0.5 - y[i], 5) ) / (2.0 ( (double M - 1) ) * pow(0.5, 5)) + 0.5;
+            s += (pow(0.5 - y[i], 5) );
         }
-        alpha[M-1] *= s;
+        alpha[M-1] *= s / (2.0 * ( (double) M - 1) * pow(0.5, 5)) + 0.5 ;
     }
 
     double g[n - m], theta;
     for (j = 0; j < n - m; ++j) {
         g[i] = 0.0;//1.0 / ((double m)) * 
         for (i = 0; i < m; ++i) {
-            theta = 2.0*M_PI * (  ( (double)(  j - (m+1) )) / (double) n );
-            g[i] += cos( M_PI * y[i] + theta );
+            theta = 2.0*M_PI * (  ( (double)( j )) / (double) n );
+            g[i] += pow( cos( M_PI * y[i] + theta ), 2);
         }
+        g[i] /= (double) m;
     }
 
-    double beta[M], maxj;
+    double beta[M], maxj, wj;
     for (i = 0; i < M; ++i) {
         maxj = -1.0;
-        for (i = m; i < n; ++i) {
+        for (j = m; j < n; ++j) {
             if ((j - m - i) % M != 0) 
                 continue;
-            wj = y[j - m] - g[j - m];
+            wj = x[j]; //y[j] - g[j - m];
             // differs from paper (supplementary material)
             maxj = fabs(wj) > maxj ? fabs(wj) : maxj;
         }
 
-        beta[i] = 10.0*pow((double)i, 2) * maxj;
+        beta[i] = 10.0*pow((double) i+1, 2) * maxj;
     }
 
     for (i = 0; i < M; ++i) {
-        f[i] = alpha[i] + beta[i];
+        F[i] = alpha[i] + beta[i];
     }
 
 }
