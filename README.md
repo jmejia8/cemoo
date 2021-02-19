@@ -4,7 +4,7 @@ An implementation of this algorithm.
 
 
 To run the algorithm for all experiments use `./run-exp.sh` (for 
-5 objective of NSGA-III) `./run-exp10.sh` (for 
+5 objective of NSGA-III) `./run-zcat-exp.sh` (for 
 10 objective of NSGA-III)
 
 For a single run of the algorithm, use the `make && ./bin/runner  < input-example.txt` command. File `input-info.txt` contains more details.
