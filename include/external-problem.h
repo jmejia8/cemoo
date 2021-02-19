@@ -35,9 +35,11 @@ void ZCAT20(double* x, double* F, int n, int M)
     double alpha[M];
     int m;
 
-    double y[n], *y_II = &y[m];
+    double y[n];
     for (i = 0; i < n; ++i) {
-        y[i] = (x[i] - ( ( (double) i + 1) / 2.0 )) / ( (double) i + 1);
+		double ai = - ((double)i + 1) / 2.0;
+		double bi = ((double)i + 1) / 2.0;
+		y[i] = (x[i] -  ai) / (bi - ai) ;
     }
 
     if ( (0.1 <= y[0] && y[0] <= 0.4 ) || (0.6 <= y[0] && y[0] <= 0.9 ) ) {
@@ -67,12 +69,12 @@ void ZCAT20(double* x, double* F, int n, int M)
 
     double g[n - m], theta;
     for (j = 0; j < n - m; ++j) {
-        g[i] = 0.0;//1.0 / ((double m)) * 
+        g[j] = 0.0;//1.0 / ((double m)) * 
         for (i = 0; i < m; ++i) {
             theta = 2.0*M_PI * (  ( (double)( j )) / (double) n );
-            g[i] += pow( cos( M_PI * y[i] + theta ), 2);
+            g[j] += pow( cos( M_PI * y[i] + theta ), 2);
         }
-        g[i] /= (double) m;
+        g[j] /= (double) m;
     }
 
     double beta[M], maxj, wj;
