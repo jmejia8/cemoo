@@ -51,11 +51,11 @@ end
 
 function main()
     # cambiar a 10
-    fname_true = "pf-true/dtlz2-10.txt"
+    fname_true = "pf-true/zcat3-3.txt"
     pf10 = readdlm(fname_true)
 
 
-    fname_true = "pf-true/dtlz2-5.txt"
+    fname_true = "pf-true/zdt2-5.txt"
     pf5 = readdlm(fname_true)
     display(pf5)
 

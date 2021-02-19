@@ -96,6 +96,86 @@ void ZCAT20(double* x, double* F, int n, int M)
 
 }
 
+
+
+//void ZCAT20(double* x, double* F, int n, int M)
+void ZCAT3(double* x, double* f, int nx, int nobj)
+{
+	int level = 1, i, j, m;
+	bool bias = true;
+	double prod1 = 1.0, prod2 = 1.0, tetha;
+	double y[nx], alpha[nobj], beta[nobj];
+
+	for (i = 0; i < nx; i++)
+	{
+		double ai = - ((double)i + 1) / 2.0;
+		double bi = ((double)i + 1) / 2.0;
+		y[i] = (x[i] -  ai) / (bi - ai) ;
+	}
+
+	m = nobj - 1;
+
+	//alpha 0 y cálculo del producto
+	for (j = 0; j < m; j++)
+		prod1 *= 1 - sin(y[j] * (M_PI / 2));
+	
+	alpha[0] = pow(1, 2) * 1 - prod1;
+
+	//alpha 1... m-1
+	for (i = 1; i < m; i++)
+	{
+		for (j = 0; j < nobj - i; j++)
+			prod2 *= 1 - sin(y[j] * (M_PI / 2));
+
+		//No le suma +1 por el indice dado que empiezo en cero (nobj-1) -i + 1 (cancelo los uno's)
+		alpha[i] = pow(i, 2) * (1 - prod2 * (1 - cos(y[nobj - i] * (M_PI / 2.0))));
+	}
+
+	//alpha m
+	alpha[m] = pow(nobj, 2) * cos(y[0] * (M_PI / 2.0));
+
+	double g[(nx - m)];
+	for (j = 0; j < nx-m; j++) 
+	{ 
+		double aux = 0.0;
+		//Calcular suma
+		for (i = 0; i < m; i++)
+		{
+			//Set tetha
+			//m+1 = nobj
+			double tetha_j = (2.0 * M_PI * (j - nobj)) / nx;
+			aux += pow(y[i],2) * sin(4.5 * M_PI * y[i] + tetha_j) + (1 / 2.0);
+		}
+
+		//	m no influye el indice
+		g[j] = (1.0 / (2.0 * m)) * aux;
+	}
+
+
+	for (i = 0; i < nobj; i++)
+	{
+		double aux = 0.0;
+		int c = 0;
+		for(j=nobj; j < nx;j++)
+		{ 
+			//Calculo de w, recorrimiento en g dado que la pos m+1 inicio en 0;
+			double wj = pow(fabs(y[j] - g[j-m]), 0.05);
+
+			//Sumar wj^2
+			if ((j - m - i) % nobj == 0)
+			{
+				aux += pow(wj, 2);
+				c++;
+			}
+		}
+		//Calculo de ji
+		beta[i] = pow((i+1), 2) * (10 / c) * aux;
+	}
+
+	for (i = 0; i < nobj; i++)
+		f[i] = alpha[i] + beta[i];
+}
+
 void objective_function(double* x, double* F, int n, int m){
     ZCAT20(x, F, n, m);
 }

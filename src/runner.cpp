@@ -16,7 +16,7 @@ void save_front(Individual* P, int pop_size, int nrun)
     int m = P[0].get_nfs();
     char fname[200];
     
-    sprintf(fname, "pf-approx/dtlz2-%d-run%d.txt", m , nrun);
+    sprintf(fname, "pf-approx/zcat20-%d-run%d.txt", m , nrun);
     txt_file.open(fname);
     std::cout << fname << std::endl;
 
@@ -79,21 +79,21 @@ int main(int argc, char *argv[]) {
     int population_size,  dim,  m,  max_gen,  nrun,  seed;
 
 
-    /**
     std::cin >> population_size;
     std::cin >> m;
     std::cin >> max_gen;
     std::cin >> seed;
-    ***/
 
+    /**
     population_size = 92;
     m = 3;
     max_gen = 250;
     seed = time(NULL);
+    ***/
 
     nrun = seed;
     
-    dim = m + 10 - 1;
+    dim = m * 10 ;
 
     printf("population_size = %d\n", population_size);
     printf("m = %d\n", m);
@@ -103,10 +103,7 @@ int main(int argc, char *argv[]) {
 
     srand(seed);
 
-
     run(population_size,  dim,  m,  max_gen,  nrun);
-
-
 
 
 }
